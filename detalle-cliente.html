@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Cliente</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        // Función para obtener los parámetros de la URL
+        function getQueryParams() {
+            let params = {};
+            window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(str, key, value) {
+                params[key] = value;
+            });
+            return params;
+        }
+
+        // Datos de ejemplo de clientes
+        const clientes = {
+            1: {
+                nombre: 'Juan Perez',
+                email: 'juan@correo.com',
+                telefono: '1234567890',
+                direccion: 'Calle Falsa 123'
+            },
+            2: {
+                nombre: 'Maria Lopez',
+                email: 'maria@correo.com',
+                telefono: '0987654321',
+                direccion: 'Avenida Siempre Viva 742'
+            }
+        };
+
+        // Función para cargar los detalles del cliente
+        function cargarDetalleCliente() {
+            const params = getQueryParams();
+            const cliente = clientes[params.id];
+            if (cliente) {
+                document.getElementById('nombre').value = cliente.nombre;
+                document.getElementById('email').value = cliente.email;
+                document.getElementById('telefono').value = cliente.telefono;
+                document.getElementById('direccion').value = cliente.direccion;
+            }
+        }
+
+        window.onload = cargarDetalleCliente;
+    </script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                <div class="sidebar-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="http://localhost/peluqueria/">Agenda</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="listado-clientes.html">Clientes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="mensajes.html">Mensajes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="estadisticas.html">Analíticas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="listado-servicios.html">Gestión de Servicios</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                <h2>Detalle del Cliente</h2>
+                <form>
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefono">Teléfono</label>
+                        <input type="text" class="form-control" id="telefono" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="direccion">Dirección</label>
+                        <input type="text" class="form-control" id="direccion" disabled>
+                    </div>
+                    <a href="listado-clientes.html" class="btn btn-primary">Volver</a>
+                </form>
+            </main>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.amazonaws.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

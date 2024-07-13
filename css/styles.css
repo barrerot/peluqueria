@@ -1,0 +1,114 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+header {
+    margin-top: 50px;
+}
+
+.header .btn-primary {
+    margin-top: 20px;
+}
+
+.step-indicator {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.step {
+    width: 23%;
+    height: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+}
+
+.step.active {
+    background-color: #007bff;
+}
+
+.sidebar {
+    height: 100vh;
+    position: fixed;
+}
+
+.container-fluid {
+    padding-left: 220px;
+}
+
+.form-check-label {
+    margin-left: 10px;
+}
+
+.card-title {
+    font-weight: bold;
+}
+
+.table img {
+    max-width: 50px;
+    height: auto;
+}
+
+.badge-primary {
+    background-color: #007bff;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/* Specific styles for configuracion pages */
+.form-group label {
+    font-weight: bold;
+}
+
+.form-group input, .form-group select {
+    margin-bottom: 10px;
+}
+
+/* Specific styles for the dashboard/estadísticas */
+.card {
+    margin-bottom: 20px;
+}
+
+.card .card-body {
+    padding: 20px;
+}
+
+.list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.list-group-item .badge {
+    font-size: 1em;
+}
+
+.container-fluid .row {
+    margin-bottom: 20px;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.chat-history {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.attachment {
+    margin-top: 10px;
+    font-style: italic;
+}
+
+.form-control.w-auto {
+    display: inline-block;
+    width: auto;
+}
