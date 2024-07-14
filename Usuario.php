@@ -98,10 +98,21 @@ class Usuario {
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
             if (password_verify($password, $user['password'])) {
-                return true;
+                return $user; // Retornamos el usuario si las credenciales son correctas
             }
         }
         return false;
+    }
+
+    public static function getUserByEmail($email) {
+        $db = new DB();
+        $conn = $db->getConnection();
+
+        $stmt = $conn->prepare('SELECT * FROM usuarios WHERE email = ?');
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
     }
 }
 ?>
