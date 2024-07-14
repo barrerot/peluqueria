@@ -1,28 +1,17 @@
 <?php
-require 'db.php';
-require 'Negocio.php';
+require_once 'db.php';
+require_once 'Negocio.php';
 
-// Suponemos que el ID del usuario está en la sesión
-session_start();
-$usuarioId = $_SESSION['usuario_id'];
+$negocios = Negocio::getAll();
+$response = ['negocios' => []];
 
-$db = new Db();
-$conn = $db->getConnection();
-
-$sql = "SELECT * FROM negocios WHERE usuario_id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $usuarioId);
-$stmt->execute();
-$result = $stmt->get_result();
-
-$negocios = [];
-while ($row = $result->fetch_assoc()) {
-    $negocios[] = [
-        'id' => $row['id'],
-        'nombre' => $row['nombre']
+foreach ($negocios as $negocio) {
+    $response['negocios'][] = [
+        'id' => $negocio->getId(),
+        'nombre' => $negocio->getNombre()
     ];
 }
 
 header('Content-Type: application/json');
-echo json_encode(['negocios' => $negocios]);
+echo json_encode($response);
 ?>

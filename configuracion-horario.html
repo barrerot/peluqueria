@@ -13,27 +13,42 @@
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
-            document.querySelectorAll('.add-interval').forEach(button => {
-                button.addEventListener('click', function() {
-                    const day = this.getAttribute('data-day');
-                    addInterval(day);
-                });
-            });
+            cargarNegocios();
         });
 
-        function addInterval(day) {
-            const container = document.getElementById(day + '-intervals');
-            const intervalRow = document.createElement('div');
-            intervalRow.classList.add('interval-row');
-            intervalRow.innerHTML = `
-                <input type="time" class="form-control" placeholder="Hora inicio" name="${day}_hora_inicio[]">
-                <input type="time" class="form-control" placeholder="Hora fin" name="${day}_hora_fin[]">
-                <button type="button" class="btn btn-danger btn-sm remove-interval">X</button>
-            `;
-            intervalRow.querySelector('.remove-interval').addEventListener('click', function() {
-                container.removeChild(intervalRow);
-            });
-            container.appendChild(intervalRow);
+        function cargarNegocios() {
+            fetch('obtener_negocios.php')
+            .then(response => response.json())
+            .then(data => {
+                const negocioSelect = document.getElementById('negocio');
+                const negocioId = new URLSearchParams(window.location.search).get('negocio_id');
+                data.negocios.forEach(negocio => {
+                    const option = document.createElement('option');
+                    option.value = negocio.id;
+                    option.text = negocio.nombre;
+                    if (negocio.id == negocioId) {
+                        option.selected = true; // Selecciona el negocio recién creado
+                    }
+                    negocioSelect.add(option);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function guardarHorarios(event) {
+            event.preventDefault();
+            const form = document.getElementById('form-horarios');
+            const formData = new FormData(form);
+            fetch('guardar_horarios.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data);
+                window.location.href = 'listado-servicios.html';
+            })
+            .catch(error => console.error('Error:', error));
         }
     </script>
 </head>
@@ -64,48 +79,61 @@
 
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
                 <h2>Configuración de Horarios</h2>
-                <form onsubmit="event.preventDefault(); guardarHorarios();" id="form-horarios">
+                <form onsubmit="guardarHorarios(event);" id="form-horarios">
                     <div class="form-group">
                         <label for="negocio">Seleccione el Negocio</label>
                         <select class="form-control" id="negocio" name="negocio_id" required>
                             <option value="">Seleccione un negocio</option>
-                            <!-- Opciones de negocios serán añadidas aquí dinámicamente -->
                         </select>
                     </div>
                     <div class="day-row">
                         <label>Lunes</label>
-                        <div id="monday-intervals"></div>
-                        <button type="button" class="btn btn-secondary btn-sm add-interval" data-day="monday">Añadir intervalo</button>
+                        <div class="interval-row">
+                            <input type="time" class="form-control" name="lunes_inicio" required>
+                            <input type="time" class="form-control" name="lunes_fin" required>
+                        </div>
                     </div>
                     <div class="day-row">
                         <label>Martes</label>
-                        <div id="tuesday-intervals"></div>
-                        <button type="button" class="btn btn-secondary btn-sm add-interval" data-day="tuesday">Añadir intervalo</button>
+                        <div class="interval-row">
+                            <input type="time" class="form-control" name="martes_inicio" required>
+                            <input type="time" class="form-control" name="martes_fin" required>
+                        </div>
                     </div>
                     <div class="day-row">
                         <label>Miércoles</label>
-                        <div id="wednesday-intervals"></div>
-                        <button type="button" class="btn btn-secondary btn-sm add-interval" data-day="wednesday">Añadir intervalo</button>
+                        <div class="interval-row">
+                            <input type="time" class="form-control" name="miercoles_inicio" required>
+                            <input type="time" class="form-control" name="miercoles_fin" required>
+                        </div>
                     </div>
                     <div class="day-row">
                         <label>Jueves</label>
-                        <div id="thursday-intervals"></div>
-                        <button type="button" class="btn btn-secondary btn-sm add-interval" data-day="thursday">Añadir intervalo</button>
+                        <div class="interval-row">
+                            <input type="time" class="form-control" name="jueves_inicio" required>
+                            <input type="time" class="form-control" name="jueves_fin" required>
+                        </div>
                     </div>
                     <div class="day-row">
                         <label>Viernes</label>
-                        <div id="friday-intervals"></div>
-                        <button type="button" class="btn btn-secondary btn-sm add-interval" data-day="friday">Añadir intervalo</button>
+                        <div class="interval-row">
+                            <input type="time" class="form-control" name="viernes_inicio" required>
+                            <input type="time" class="form-control" name="viernes_fin" required>
+                        </div>
                     </div>
                     <div class="day-row">
                         <label>Sábado</label>
-                        <div id="saturday-intervals"></div>
-                        <button type="button" class="btn btn-secondary btn-sm add-interval" data-day="saturday">Añadir intervalo</button>
+                        <div class="interval-row">
+                            <input type="time" class="form-control" name="sabado_inicio" required>
+                            <input type="time" class="form-control" name="sabado_fin" required>
+                        </div>
                     </div>
                     <div class="day-row">
                         <label>Domingo</label>
-                        <div id="sunday-intervals"></div>
-                        <button type="button" class="btn btn-secondary btn-sm add-interval" data-day="sunday">Añadir intervalo</button>
+                        <div class="interval-row">
+                            <input type="time" class="form-control" name="domingo_inicio" required>
+                            <input type="time" class="form-control" name="domingo_fin" required>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Siguiente</button>
                 </form>
@@ -115,40 +143,5 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.amazonaws.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        function guardarHorarios() {
-            const form = document.getElementById('form-horarios');
-            const formData = new FormData(form);
-            fetch('guardar_horarios.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(data => {
-                console.log(data);
-                window.location.href = 'listado-servicios.html';
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-        function cargarNegocios() {
-            fetch('obtener_negocios.php')
-            .then(response => response.json())
-            .then(data => {
-                const negocioSelect = document.getElementById('negocio');
-                data.negocios.forEach(negocio => {
-                    const option = document.createElement('option');
-                    option.value = negocio.id;
-                    option.text = negocio.nombre;
-                    negocioSelect.add(option);
-                });
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            cargarNegocios();
-        });
-    </script>
 </body>
 </html>

@@ -35,29 +35,28 @@
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
                 <h2>Información del Negocio</h2>
                 
-                <!-- Mensaje de bienvenida -->
                 <p>Bienvenido, el registro ha sido exitoso. Ahora puedes configurar tu información adicional.</p>
                 
-                <form onsubmit="event.preventDefault(); window.location.href='configuracion-horario.html';">
+                <form action="configuracion-informacion.php" method="POST">
                     <div class="form-group">
                         <label for="nombre">Nombre del negocio</label>
-                        <input type="text" class="form-control" id="nombre" placeholder="Ingrese el nombre del negocio">
+                        <input type="text" class="form-control" id="nombre" name="nombre_negocio" placeholder="Ingrese el nombre del negocio" required>
                     </div>
                     <div class="form-group">
                         <label for="direccion">Dirección</label>
-                        <input type="text" class="form-control" id="direccion" placeholder="Ingrese la dirección">
+                        <input type="text" class="form-control" id="direccion" name="direccion_negocio" placeholder="Ingrese la dirección" required>
                     </div>
                     <div class="form-group">
                         <label for="telefono">Teléfono</label>
-                        <input type="text" class="form-control" id="telefono" placeholder="Ingrese el teléfono">
+                        <input type="text" class="form-control" id="telefono" name="telefono_negocio" placeholder="Ingrese el teléfono" required>
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" placeholder="Ingrese el email">
+                        <input type="email" class="form-control" id="email" name="email_negocio" placeholder="Ingrese el email" required>
                     </div>
                     <div class="form-group">
                         <label for="descripcion">Descripción</label>
-                        <textarea class="form-control" id="descripcion" rows="3" placeholder="Ingrese una descripción del negocio"></textarea>
+                        <textarea class="form-control" id="descripcion" name="descripcion_negocio" rows="3" placeholder="Ingrese una descripción del negocio"></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Siguiente</button>
                 </form>
