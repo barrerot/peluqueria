@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    header('Location: listado-servicios.html');
+    header('Location: listado-servicios.php');
     exit();
 }
 ?>
