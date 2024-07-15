@@ -1,4 +1,10 @@
-<!DOCTYPE html>
+<?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Location: acceso-usuario.html");
+    exit();
+}
+?><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,19 +20,19 @@
                 <div class="sidebar-sticky">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.html">Agenda</a>
+                            <a class="nav-link" href="index.php">Agenda</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="listado-clientes.html">Clientes</a>
+                            <a class="nav-link" href="listado-clientes.php">Clientes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="mensajes.html">Mensajes</a>
+                            <a class="nav-link" href="mensajes.php">Mensajes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="estadisticas.html">Analíticas</a>
+                            <a class="nav-link" href="estadisticas.php">Analíticas</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="listado-servicios.html">Gestión de Servicios</a>
+                            <a class="nav-link" href="listado-servicios.php">Gestión de Servicios</a>
                         </li>
                     </ul>
                 </div>
