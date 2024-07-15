@@ -1,10 +1,28 @@
 <?php
 session_start();
+require_once 'db.php';
+require_once 'Servicio.php';
+
 if (!isset($_SESSION['user_id'])) {
-    header("Location: acceso-usuario.html");
+    header("Location: login.php");
     exit();
 }
+
+$user_id = $_SESSION['user_id'];
+
+$db = new DB();
+$conn = $db->getConnection();
+
+$servicio = new Servicio($conn);
+$servicios = $servicio->getAll();
+
+if (isset($_POST['delete'])) {
+    $id = $_POST['id'];
+    $servicio->delete($id);
+    header("Location: listado-servicios.php");
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,94 +30,40 @@ if (!isset($_SESSION['user_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listado de Servicios</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-                <div class="sidebar-sticky">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="./peluqueria">Agenda</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="listado-clientes.php">Clientes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="mensajes.php">Mensajes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="estadisticas.php">Analíticas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="listado-servicios.php">Gestión de Servicios</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-
-            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                <h2>Listado de Servicios</h2>
-                <div class="mb-3">
-                    <button class="btn btn-success" data-toggle="modal" data-target="#nuevoServicioModal">Añadir Servicio</button>
-                </div>
-                <ul class="list-group">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Nombre del servicio 1
-                        <span>
-                            <button class="btn btn-primary btn-sm">Editar</button>
-                            <button class="btn btn-danger btn-sm">Eliminar</button>
-                        </span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Nombre del servicio 2
-                        <span>
-                            <button class="btn btn-primary btn-sm">Editar</button>
-                            <button class="btn btn-danger btn-sm">Eliminar</button>
-                        </span>
-                    </li>
-                </ul>
-                <div class="mt-3">
-                    <button class="btn btn-primary">Siguiente</button>
-                </div>
-            </main>
-        </div>
-    </div>
-
-    <!-- Modal para añadir un nuevo servicio -->
-    <div class="modal fade" id="nuevoServicioModal" tabindex="-1" role="dialog" aria-labelledby="nuevoServicioModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="nuevoServicioModalLabel">Crear nuevo servicio</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form onsubmit="event.preventDefault(); $('#nuevoServicioModal').modal('hide');">
-                        <div class="form-group">
-                            <label for="nombre-servicio">Nombre del servicio</label>
-                            <input type="text" class="form-control" id="nombre-servicio" placeholder="Nombre del servicio">
-                        </div>
-                        <div class="form-group">
-                            <label for="duracion-servicio">Duración</label>
-                            <input type="text" class="form-control" id="duracion-servicio" placeholder="Duración">
-                        </div>
-                        <div class="form-group">
-                            <label for="precio-servicio">Precio</label>
-                            <input type="text" class="form-control" id="precio-servicio" placeholder="Precio">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Crear</button>
+<div class="container">
+    <h2>Listado de Servicios</h2>
+    <a href="nuevo-servicio.php" class="btn btn-primary">Añadir Nuevo Servicio</a>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Duración</th>
+            <th>Precio</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($servicios as $serv): ?>
+            <tr>
+                <td><?php echo $serv['nombre']; ?></td>
+                <td><?php echo $serv['duracion']; ?> minutos</td>
+                <td><?php echo $serv['precio']; ?> $</td>
+                <td>
+                    <a href="nuevo-servicio.php?id=<?php echo $serv['id']; ?>" class="btn btn-warning">Editar</a>
+                    <form method="POST" style="display:inline;">
+                        <input type="hidden" name="id" value="<?php echo $serv['id']; ?>">
+                        <button type="submit" name="delete" class="btn btn-danger">Eliminar</button>
                     </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.amazonaws.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -4,30 +4,31 @@ include 'db_connect.php';
 $sql = "SELECT * FROM citas";
 $result = $conn->query($sql);
 
-if (!$result) {
-  die("Error ejecutando la consulta de citas: " . $conn->error);
-}
+$events = [];
 
-$events = array();
-while($row = $result->fetch_assoc()) {
-  $eventId = $row['id'];
-  
-  $sqlServices = "SELECT servicios.id, servicios.nombre, servicios.duracion, servicios.precio 
-                  FROM servicios 
-                  JOIN citas_servicios ON servicios.id = citas_servicios.servicio_id 
-                  WHERE citas_servicios.cita_id = $eventId";
-  $resultServices = $conn->query($sqlServices);
-  
-  $services = array();
-  while ($serviceRow = $resultServices->fetch_assoc()) {
-    $services[] = $serviceRow;
-  }
+while ($row = $result->fetch_assoc()) {
+    // Obtener los servicios asociados a la cita
+    $sql_services = "SELECT servicio_id FROM citas_servicios WHERE cita_id = ?";
+    $stmt_services = $conn->prepare($sql_services);
+    $stmt_services->bind_param("i", $row['id']);
+    $stmt_services->execute();
+    $result_services = $stmt_services->get_result();
 
-  $row['services'] = $services;
-  $events[] = $row;
+    $services = [];
+    while ($service = $result_services->fetch_assoc()) {
+        $services[] = $service['servicio_id'];
+    }
+
+    $events[] = [
+        'id' => $row['id'],
+        'title' => $row['title'],
+        'start' => $row['start'],
+        'end' => $row['end'],
+        'extendedProps' => [
+            'services' => $services
+        ]
+    ];
 }
 
 echo json_encode($events);
-
-$conn->close();
 ?>
