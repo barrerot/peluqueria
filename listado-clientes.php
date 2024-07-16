@@ -1,10 +1,13 @@
 <?php
-session_start();
-if (!isset($_SESSION['user_id'])) {
-    header("Location: acceso-usuario.html");
-    exit();
-}
-?><!DOCTYPE html>
+require_once 'Cliente.php';
+
+use App\Cliente;
+
+$cliente = new Cliente();
+$clientes = $cliente->obtenerClientes();
+?>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -20,7 +23,7 @@ if (!isset($_SESSION['user_id'])) {
                 <div class="sidebar-sticky">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.php">Agenda</a>
+                            <a class="nav-link" href="./peluqueria/">Agenda</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="listado-clientes.php">Clientes</a>
@@ -32,42 +35,36 @@ if (!isset($_SESSION['user_id'])) {
                             <a class="nav-link" href="estadisticas.php">Analíticas</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="listado-servicios.php">Gestión de Servicios</a>
+                            <a class="nav-link" href="listado-servicios.php">Servicios</a>
                         </li>
                     </ul>
                 </div>
             </nav>
-
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
                 <h2>Listado de Clientes</h2>
-                <div class="mb-3">
-                    <a href="nuevo-cliente.html" class="btn btn-success">Añadir Nuevo Cliente</a>
-                </div>
+                <a href="nuevo-cliente.php" class="btn btn-primary mb-3">Añadir Cliente</a>
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Teléfono</th>
-                            <th scope="col">Acciones</th>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td><a href="detalle-cliente.html?id=1">Juan Perez</a></td>
-                            <td>juan@correo.com</td>
-                            <td>1234567890</td>
-                            <td><a href="detalle-cliente.html?id=1">Ver detalles</a></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td><a href="detalle-cliente.html?id=2">Maria Lopez</a></td>
-                            <td>maria@correo.com</td>
-                            <td>0987654321</td>
-                            <td><a href="detalle-cliente.html?id=2">Ver detalles</a></td>
-                        </tr>
+                        <?php foreach ($clientes as $cliente): ?>
+                            <tr>
+                                <td><?php echo $cliente['nombre']; ?></td>
+                                <td><?php echo $cliente['telefono']; ?></td>
+                                <td><?php echo $cliente['email']; ?></td>
+                                <td>
+                                    <a href="detalle-cliente.php?id=<?php echo $cliente['id']; ?>" class="btn btn-info">Ver</a>
+                                    <a href="editar-cliente.php?id=<?php echo $cliente['id']; ?>" class="btn btn-warning">Editar</a>
+                                    <a href="eliminar-cliente.php?id=<?php echo $cliente['id']; ?>" class="btn btn-danger">Eliminar</a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </main>

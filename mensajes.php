@@ -33,6 +33,9 @@ if (!isset($_SESSION['user_id'])) {
                         <li class="nav-item">
                             <a class="nav-link" href="estadisticas.php">Analíticas</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="listado-servicios.php">Servicios</a>
+                        </li>
                     </ul>
                 </div>
             </nav>

@@ -1,30 +1,67 @@
 <?php
-class Cliente {
-    public $id;
-    public $negocio_id;
-    public $nombre;
-    public $email;
-    public $telefono;
-    public $direccion;
-    public $fecha_creacion;
-    public $cumpleanos;
+namespace App;
 
+require_once 'db.php';
+
+class Cliente {
     private $conn;
 
-    public function __construct($conn) {
-        $this->conn = $conn;
+    public function __construct() {
+        $db = new \DB();
+        $this->conn = $db->getConnection();
     }
 
-    public function save() {
-        $stmt = $this->conn->prepare("INSERT INTO Cliente (negocio_id, nombre, email, telefono, direccion, fecha_creacion, cumpleanos) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("issssss", $this->negocio_id, $this->nombre, $this->email, $this->telefono, $this->direccion, $this->fecha_creacion, $this->cumpleanos);
+    public function obtenerClientes() {
+        $query = "SELECT * FROM clientes";
+        $result = $this->conn->query($query);
+        $clientes = [];
+        while ($row = $result->fetch_assoc()) {
+            $clientes[] = $row;
+        }
+        return $clientes;
+    }
+
+    public function obtenerClientePorId($id) {
+        $query = "SELECT * FROM clientes WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $id);
         $stmt->execute();
-        $stmt->close();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
     }
 
-    public static function getAll($conn) {
-        $result = $conn->query("SELECT * FROM Cliente");
-        return $result->fetch_all(MYSQLI_ASSOC);
+    public function crearCliente($nombre, $telefono, $email, $cumpleanos, $negocio_id) {
+        $query = "INSERT INTO clientes (nombre, telefono, email, cumpleanos, negocio_id) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("ssssi", $nombre, $telefono, $email, $cumpleanos, $negocio_id);
+        return $stmt->execute();
+    }
+
+    public function actualizarCliente($id, $nombre, $telefono, $email, $cumpleanos, $negocio_id) {
+        $query = "UPDATE clientes SET nombre = ?, telefono = ?, email = ?, cumpleanos = ?, negocio_id = ? WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("ssssii", $nombre, $telefono, $email, $cumpleanos, $negocio_id, $id);
+        return $stmt->execute();
+    }
+
+    public function eliminarCliente($id) {
+        $query = "DELETE FROM clientes WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $id);
+        return $stmt->execute();
+    }
+
+    public function obtenerNegociosPorUsuario($user_id) {
+        $query = "SELECT * FROM negocios WHERE user_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $negocios = [];
+        while ($row = $result->fetch_assoc()) {
+            $negocios[] = $row;
+        }
+        return $negocios;
     }
 }
 ?>
