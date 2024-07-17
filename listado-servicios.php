@@ -32,35 +32,63 @@ if (isset($_POST['delete'])) {
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="container">
-    <h2>Listado de Servicios</h2>
-    <a href="nuevo-servicio.php" class="btn btn-primary">Añadir Nuevo Servicio</a>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Duración</th>
-            <th>Precio</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($servicios as $serv): ?>
-            <tr>
-                <td><?php echo $serv['nombre']; ?></td>
-                <td><?php echo $serv['duracion']; ?> minutos</td>
-                <td><?php echo $serv['precio']; ?> $</td>
-                <td>
-                    <a href="nuevo-servicio.php?id=<?php echo $serv['id']; ?>" class="btn btn-warning">Editar</a>
-                    <form method="POST" style="display:inline;">
-                        <input type="hidden" name="id" value="<?php echo $serv['id']; ?>">
-                        <button type="submit" name="delete" class="btn btn-danger">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Inicio del menú -->
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="./peluqueria/">Agenda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="listado-clientes.php">Clientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="mensajes.php">Mensajes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="estadisticas.php">Analíticas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="listado-servicios.php">Servicios</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- Fin del menú -->
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+            <h2>Listado de Servicios</h2>
+            <a href="nuevo-servicio.php" class="btn btn-primary">Añadir Nuevo Servicio</a>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Duración</th>
+                    <th>Precio</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($servicios as $serv): ?>
+                    <tr>
+                        <td><?php echo $serv['nombre']; ?></td>
+                        <td><?php echo $serv['duracion']; ?> minutos</td>
+                        <td><?php echo $serv['precio']; ?> $</td>
+                        <td>
+                            <a href="nuevo-servicio.php?id=<?php echo $serv['id']; ?>" class="btn btn-warning">Editar</a>
+                            <form method="POST" style="display:inline;">
+                                <input type="hidden" name="id" value="<?php echo $serv['id']; ?>">
+                                <button type="submit" name="delete" class="btn btn-danger">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </main>
+    </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
