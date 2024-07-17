@@ -51,8 +51,11 @@
     <div class="modal-content">
       <span class="close">&times;</span>
       <form id="eventForm">
-        <label for="title">Cliente:</label>
-        <input type="text" id="title" name="title" required>
+        <label for="cliente">Cliente:</label>
+        <select id="cliente" name="cliente" required>
+          <option value="">Seleccione un cliente</option>
+        </select>
+        <a id="detalleClienteLink" href="#" target="_blank">Detalle Cliente</a>
         <br><br>
         <label for="start">Fecha y Hora de Inicio:</label>
         <input type="datetime-local" id="start" name="start" required>

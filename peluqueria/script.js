@@ -36,19 +36,32 @@ $(document).ready(function() {
       events: {
         url: 'fetch_events.php',
         method: 'GET',
+        extraParams: function() {
+          return {
+            negocio_id: 1 // Ajusta esto según sea necesario
+          };
+        },
+        success: function(data) {
+          console.log('Eventos cargados:', data);
+        },
         failure: function() {
           alert('Error al cargar las citas');
         }
       },
       eventClick: function(info) {
+        console.log('Evento clicado:', info.event);
         // Limpiar todos los campos del formulario al abrir el modal
         $('#eventForm')[0].reset();
         $('#eventModal').css('display', 'block');
-        $('#title').val(info.event.title);
+        $('#cliente').val(info.event.extendedProps.cliente_id); // Establecer el cliente en el select
         $('#start').val(moment(info.event.start).format('YYYY-MM-DDTHH:mm'));
         if (info.event.end) {
           $('#end').val(moment(info.event.end).format('YYYY-MM-DDTHH:mm'));
         }
+
+        // Actualizar el enlace de "Detalle Cliente" con el ID del cliente
+        var clienteId = info.event.extendedProps.cliente_id;
+        $('#detalleClienteLink').attr('href', '../detalle-cliente.php?id=' + clienteId);
 
         // Marcar las casillas de verificación correspondientes a los servicios seleccionados
         var services = info.event.extendedProps.services || [];
@@ -62,6 +75,7 @@ $(document).ready(function() {
         $('#eventForm').data('eventId', info.event.id);
       },
       select: function(info) {
+        console.log('Seleccionar rango:', info);
         // Limpiar todos los campos del formulario al abrir el modal
         $('#eventForm')[0].reset();
         $('#eventModal').css('display', 'block');
@@ -73,12 +87,15 @@ $(document).ready(function() {
         $('#end').val('');  // Limpiar el campo de fin
         $('input[name="service"]').prop('checked', false);  // Desmarcar todas las casillas de verificación
         $('#deleteButton').hide();  // Ocultar botón de borrar en la creación
+
+        // Limpiar el enlace de "Detalle Cliente"
+        $('#detalleClienteLink').attr('href', '#');
       },
       editable: true,
       eventDidMount: function(info) {
         let startTime = info.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         let endTime = info.event.end ? info.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-        let title = info.event.title;
+        let title = info.event.extendedProps.cliente_nombre; // Mostrar el nombre del cliente
 
         let innerHtml = `
           <div class="fc-event-time">${startTime} - ${endTime}</div>
@@ -130,6 +147,27 @@ $(document).ready(function() {
 
   loadServices();
 
+  // Cargar clientes desde la base de datos
+  function loadClients() {
+    $.ajax({
+      url: 'fetch_clients.php',
+      method: 'GET',
+      dataType: 'json',
+      success: function(data) {
+        $('#cliente').empty();
+        $('#cliente').append('<option value="">Seleccione un cliente</option>');
+        $.each(data, function(key, client) {
+          $('#cliente').append('<option value="' + client.id + '">' + client.nombre + '</option>');
+        });
+      },
+      error: function() {
+        alert('Error al cargar los clientes');
+      }
+    });
+  }
+
+  loadClients();
+
   // Calcular la hora de fin cuando se seleccionan servicios
   $('#serviceContainer').on('change', 'input[name="service"]', function() {
     var start = $('#start').val();
@@ -158,7 +196,7 @@ $(document).ready(function() {
   $('#eventForm').on('submit', function(e) {
     e.preventDefault();
     
-    var title = $('#title').val();
+    var clienteId = $('#cliente').val();
     var start = $('#start').val();
     var end = $('#end').val();
     var services = $('input[name="service"]:checked').map(function() {
@@ -167,12 +205,10 @@ $(document).ready(function() {
     var eventId = $(this).data('eventId');
 
     var eventData = {
-      title: title,
+      cliente_id: clienteId,
       start: start,
       end: end,
-      extendedProps: {
-        services: services
-      }
+      services: JSON.stringify(services)
     };
 
     if (eventId) {
@@ -181,7 +217,7 @@ $(document).ready(function() {
         method: 'POST',
         data: {
           id: eventId,
-          title: title,
+          cliente_id: clienteId,
           start: start,
           end: end,
           services: JSON.stringify(services)
@@ -195,12 +231,7 @@ $(document).ready(function() {
       $.ajax({
         url: 'add_event.php',
         method: 'POST',
-        data: {
-          title: title,
-          start: start,
-          end: end,
-          services: JSON.stringify(services)
-        },
+        data: eventData,
         success: function(eventId) {
           calendar.refetchEvents(); // Refrescar los eventos en el calendario
           closeModal();
@@ -222,6 +253,16 @@ $(document).ready(function() {
           closeModal();
         }
       });
+    }
+  });
+
+  // Actualizar el enlace de "Detalle Cliente" cuando se cambia el cliente en el select
+  $('#cliente').on('change', function() {
+    var clienteId = $(this).val();
+    if (clienteId) {
+      $('#detalleClienteLink').attr('href', '../detalle-cliente.php?id=' + clienteId);
+    } else {
+      $('#detalleClienteLink').attr('href', '#');
     }
   });
 });

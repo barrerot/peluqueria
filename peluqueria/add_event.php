@@ -1,49 +1,41 @@
 <?php
-include 'db_connect.php';
+require 'db_connect.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $title = $_POST['title'];
-    $start = $_POST['start'];
-    $end = $_POST['end'];
-    $services = json_decode($_POST['services'], true); // Decodificar el JSON de servicios
+$cliente_id = $_POST['cliente_id'];
+$start = $_POST['start'];
+$end = $_POST['end'];
+$services = json_decode($_POST['services'], true);
 
-    $conn->begin_transaction();
+// Obtenemos el nombre del cliente basado en el ID para usarlo como título
+$sql = "SELECT nombre FROM clientes WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $cliente_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$cliente = $result->fetch_assoc();
+$title = $cliente['nombre'];
 
-    try {
-        // Insertar la cita principal
-        $sql = "INSERT INTO citas (title, start, end) VALUES (?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        if (!$stmt) {
-            throw new Exception("Prepare failed: " . $conn->error);
-        }
-
-        $stmt->bind_param("sss", $title, $start, $end);
-        if (!$stmt->execute()) {
-            throw new Exception("Execute failed: " . $stmt->error);
-        }
-
-        $cita_id = $stmt->insert_id;
-
-        // Insertar los servicios asociados
-        $sql_services = "INSERT INTO citas_servicios (cita_id, servicio_id) VALUES (?, ?)";
-        $stmt_services = $conn->prepare($sql_services);
-        if (!$stmt_services) {
-            throw new Exception("Prepare services failed: " . $conn->error);
-        }
-
-        foreach ($services as $service) {
-            $stmt_services->bind_param("ii", $cita_id, $service['id']);
-            if (!$stmt_services->execute()) {
-                throw new Exception("Execute services failed: " . $stmt_services->error);
-            }
-        }
-
-        $conn->commit();
-        echo $cita_id;
-    } catch (Exception $e) {
-        $conn->rollback();
-        http_response_code(500);
-        echo json_encode(["error" => $e->getMessage()]);
+// Insertar la cita en la tabla citas
+$sql = "INSERT INTO citas (title, start, end) VALUES (?, ?, ?)";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("sss", $title, $start, $end);
+if ($stmt->execute()) {
+    $cita_id = $stmt->insert_id;
+    
+    // Insertar los servicios en la tabla citas_servicios
+    $sql_services = "INSERT INTO citas_servicios (cita_id, servicio_id) VALUES (?, ?)";
+    $stmt_services = $conn->prepare($sql_services);
+    foreach ($services as $service) {
+        $stmt_services->bind_param("ii", $cita_id, $service['id']);
+        $stmt_services->execute();
     }
+    $stmt_services->close();
+
+    echo json_encode(['id' => $cita_id]);
+} else {
+    echo json_encode(['error' => $stmt->error]);
 }
+
+$stmt->close();
+$conn->close();
 ?>
