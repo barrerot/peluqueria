@@ -1,7 +1,32 @@
 <?php
+session_start(); // Asegúrate de iniciar la sesión
 require 'db_connect.php';
 
-$negocio_id = 11; // Cambia esto al ID de tu negocio
+if (!isset($_SESSION['user_id'])) {
+    die('Error: No se ha encontrado el ID del usuario en la sesión.');
+}
+
+$user_id = $_SESSION['user_id']; // Obtener el ID del usuario desde la sesión
+
+// Obtener el negocio_id basado en el user_id
+$sql_negocio = "SELECT id FROM negocios WHERE user_id = ?";
+$stmt_negocio = $conn->prepare($sql_negocio);
+if (!$stmt_negocio) {
+    die('Prepare failed: ' . $conn->error);
+}
+
+$stmt_negocio->bind_param("i", $user_id);
+if (!$stmt_negocio->execute()) {
+    die('Execute failed: ' . $stmt_negocio->error);
+}
+
+$result_negocio = $stmt_negocio->get_result();
+$negocio = $result_negocio->fetch_assoc();
+if (!$negocio) {
+    die('Error: No se ha encontrado un negocio para este usuario.');
+}
+
+$negocio_id = $negocio['id'];
 
 // Consulta SQL para obtener las citas junto con los datos del cliente
 $sql = "
@@ -17,7 +42,7 @@ $sql = "
     JOIN 
         clientes 
     ON 
-        citas.title = clientes.nombre
+        citas.clienteId = clientes.id
     WHERE 
         clientes.negocio_id = ?
 ";

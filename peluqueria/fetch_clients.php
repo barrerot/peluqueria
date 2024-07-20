@@ -1,7 +1,7 @@
 <?php
 require 'db_connect.php';
 
-$negocio_id = 11; // Cambia esto al ID de tu negocio
+$negocio_id = 1; // Cambia esto al ID de tu negocio
 
 $sql = "SELECT id, nombre FROM clientes WHERE negocio_id = ?";
 $stmt = $conn->prepare($sql);
