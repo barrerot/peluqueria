@@ -92,11 +92,11 @@
 <body>
     <div class="container">
         <h2>Configuración de Horarios de Apertura</h2>
-        <form id="horario-form">
+        <form id="horario-form" action="guardar_horario.php" method="POST">
             <div id="days-container">
                 <!-- Días de la semana -->
             </div>
-            <button type="button" class="btn btn-primary mt-3" onclick="addDay()">Añadir Día</button>
+            <button type="submit" class="btn btn-success mt-3">Guardar Horario</button>
         </form>
     </div>
 

@@ -1,5 +1,5 @@
 const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-const hours = Array.from({length: 96}, (_, i) => {
+const hours = Array.from({ length: 96 }, (_, i) => {
     const hour = String(Math.floor(i / 4)).padStart(2, '0');
     const minutes = String((i % 4) * 15).padStart(2, '0');
     return `${hour}:${minutes}`;
@@ -121,3 +121,35 @@ function addInterval(day) {
 
 // Inicializar días
 addDay();
+
+// Agregar evento submit al formulario
+document.getElementById('horario-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    // Aquí puedes recorrer todos los días y sus intervalos para añadirlos a formData
+    days.forEach(day => {
+        const dayContent = document.getElementById(`${day}-content`);
+        if (!dayContent.classList.contains('no-disponible')) {
+            const intervals = Array.from(dayContent.getElementsByClassName('interval-row'));
+            intervals.forEach((interval, index) => {
+                const startHour = interval.querySelector('select').value;
+                const endHour = interval.querySelectorAll('select')[1].value;
+                formData.append(`${day}[${index}][start]`, startHour);
+                formData.append(`${day}[${index}][end]`, endHour);
+            });
+        }
+    });
+
+    fetch('guardar_horario.php', {
+        method: 'POST',
+        body: formData
+    }).then(response => response.json())
+      .then(data => {
+          console.log('Success:', data);
+          // Aquí puedes manejar la respuesta de la forma que necesites
+      }).catch((error) => {
+          console.error('Error:', error);
+      });
+});
