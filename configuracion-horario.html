@@ -1,147 +1,133 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configuración - Horarios</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
+    <title>Configuración de Horarios</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        .day-row { margin-bottom: 15px; }
-        .interval-row { display: flex; align-items: center; margin-bottom: 5px; }
-        .interval-row input { margin-right: 10px; }
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .interval-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .interval-row .interval {
+            display: flex;
+            align-items: center;
+        }
+        .interval-row .choices {
+            margin: 0 5px;
+            width: 100px;
+        }
+        .interval-row .choices__inner {
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+        }
+        .interval-row .choices__list--dropdown .choices__item--selectable {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .interval-row .remove-interval {
+            margin-left: 10px;
+            padding: 8px 12px;
+            border: none;
+            background-color: #b0b0b0;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .interval-row .remove-interval:hover {
+            background-color: #909090;
+        }
+        .day-div button {
+            margin: 5px 5px 5px 0;
+            padding: 8px 12px;
+            border: none;
+            background-color: #b0b0b0;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .day-div button:hover {
+            background-color: #909090;
+        }
+        .day-div .btn-danger {
+            background-color: #b0b0b0;
+        }
+        .day-div .btn-danger:hover {
+            background-color: #909090;
+        }
+        .day-div .btn-secondary {
+            background-color: #b0b0b0;
+        }
+        .day-div .btn-secondary:hover {
+            background-color: #909090;
+        }
+        .day-div .btn-success {
+            background-color: #b0b0b0;
+        }
+        .day-div .btn-success:hover {
+            background-color: #909090;
+        }
+        .no-disponible {
+            color: red;
+        }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            cargarNegocios();
-        });
-
-        function cargarNegocios() {
-            fetch('obtener_negocios.php')
-            .then(response => response.json())
-            .then(data => {
-                const negocioSelect = document.getElementById('negocio');
-                const negocioId = new URLSearchParams(window.location.search).get('negocio_id');
-                data.negocios.forEach(negocio => {
-                    const option = document.createElement('option');
-                    option.value = negocio.id;
-                    option.text = negocio.nombre;
-                    if (negocio.id == negocioId) {
-                        option.selected = true; // Selecciona el negocio recién creado
-                    }
-                    negocioSelect.add(option);
-                });
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-        function guardarHorarios(event) {
-            event.preventDefault();
-            const form = document.getElementById('form-horarios');
-            const formData = new FormData(form);
-            fetch('guardar_horarios.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(data => {
-                console.log(data);
-                window.location.href = 'listado-servicios.html';
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    </script>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-                <div class="sidebar-sticky">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.html">Agenda</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="listado-clientes.html">Clientes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="mensajes.html">Mensajes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="estadisticas.html">Analíticas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="listado-servicios.html">Gestión de Servicios</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+    <div class="container">
+        <h2>Configuración de Horarios de Apertura</h2>
+        <form id="horario-form" action="guardar_horario.php" method="POST">
+            <div id="days-container">
+                <!-- Días de la semana -->
+            </div>
+            <button type="submit" class="btn btn-success mt-3">Guardar Horario</button>
+        </form>
+    </div>
 
-            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                <h2>Configuración de Horarios</h2>
-                <form onsubmit="guardarHorarios(event);" id="form-horarios">
-                    <div class="form-group">
-                        <label for="negocio">Seleccione el Negocio</label>
-                        <select class="form-control" id="negocio" name="negocio_id" required>
-                            <option value="">Seleccione un negocio</option>
-                        </select>
-                    </div>
-                    <div class="day-row">
-                        <label>Lunes</label>
-                        <div class="interval-row">
-                            <input type="time" class="form-control" name="lunes_inicio" required>
-                            <input type="time" class="form-control" name="lunes_fin" required>
+    <!-- Modal para duplicar horario -->
+    <div class="modal fade" id="duplicateModal" tabindex="-1" role="dialog" aria-labelledby="duplicateModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="duplicateModalLabel">Duplicar Horario</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="duplicate-form">
+                        <div id="duplicate-days-container">
+                            <!-- Checkbox para cada día -->
                         </div>
-                    </div>
-                    <div class="day-row">
-                        <label>Martes</label>
-                        <div class="interval-row">
-                            <input type="time" class="form-control" name="martes_inicio" required>
-                            <input type="time" class="form-control" name="martes_fin" required>
-                        </div>
-                    </div>
-                    <div class="day-row">
-                        <label>Miércoles</label>
-                        <div class="interval-row">
-                            <input type="time" class="form-control" name="miercoles_inicio" required>
-                            <input type="time" class="form-control" name="miercoles_fin" required>
-                        </div>
-                    </div>
-                    <div class="day-row">
-                        <label>Jueves</label>
-                        <div class="interval-row">
-                            <input type="time" class="form-control" name="jueves_inicio" required>
-                            <input type="time" class="form-control" name="jueves_fin" required>
-                        </div>
-                    </div>
-                    <div class="day-row">
-                        <label>Viernes</label>
-                        <div class="interval-row">
-                            <input type="time" class="form-control" name="viernes_inicio" required>
-                            <input type="time" class="form-control" name="viernes_fin" required>
-                        </div>
-                    </div>
-                    <div class="day-row">
-                        <label>Sábado</label>
-                        <div class="interval-row">
-                            <input type="time" class="form-control" name="sabado_inicio" required>
-                            <input type="time" class="form-control" name="sabado_fin" required>
-                        </div>
-                    </div>
-                    <div class="day-row">
-                        <label>Domingo</label>
-                        <div class="interval-row">
-                            <input type="time" class="form-control" name="domingo_inicio" required>
-                            <input type="time" class="form-control" name="domingo_fin" required>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Siguiente</button>
-                </form>
-            </main>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmDuplicate()">Duplicar</button>
+                </div>
+            </div>
         </div>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.amazonaws.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
