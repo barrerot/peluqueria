@@ -145,11 +145,15 @@ document.getElementById('horario-form').addEventListener('submit', function(even
     fetch('guardar_horario.php', {
         method: 'POST',
         body: formData
-    }).then(response => response.json())
-      .then(data => {
-          console.log('Success:', data);
-          // Aquí puedes manejar la respuesta de la forma que necesites
-      }).catch((error) => {
-          console.error('Error:', error);
-      });
+    }).then(response => {
+        if (response.ok) {
+            // Redirigir al usuario a listado-servicios.php
+            window.location.href = 'listado-servicios.php';
+        } else {
+            // Manejar error si es necesario
+            console.error('Error en la solicitud:', response.statusText);
+        }
+    }).catch((error) => {
+        console.error('Error:', error);
+    });
 });

@@ -1,0 +1,27 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
+DELETE FROM `citas`;
+ALTER TABLE `citas` AUTO_INCREMENT = 1;
+
+DELETE FROM `citas_servicios`;
+ALTER TABLE `citas_servicios` AUTO_INCREMENT = 1;
+
+DELETE FROM `clientes`;
+ALTER TABLE `clientes` AUTO_INCREMENT = 1;
+
+DELETE FROM `horarios`;
+ALTER TABLE `horarios` AUTO_INCREMENT = 1;
+
+DELETE FROM `mensajes`;
+ALTER TABLE `mensajes` AUTO_INCREMENT = 1;
+
+DELETE FROM `negocios`;
+ALTER TABLE `negocios` AUTO_INCREMENT = 1;
+
+DELETE FROM `servicios`;
+ALTER TABLE `servicios` AUTO_INCREMENT = 1;
+
+DELETE FROM `usuarios`;
+ALTER TABLE `usuarios` AUTO_INCREMENT = 1;
+
+SET FOREIGN_KEY_CHECKS = 1;

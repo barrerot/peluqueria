@@ -1,7 +1,8 @@
 <?php
 include 'db_connect.php';
 
-$sql = "SELECT dia_semana, hora_apertura, hora_cierre FROM horarios";
+// Ajusta esta consulta según los nombres actuales de las columnas
+$sql = "SELECT dia, hora_inicio, hora_fin FROM horarios";
 $result = $conn->query($sql);
 
 if (!$result) {
