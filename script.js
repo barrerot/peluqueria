@@ -148,7 +148,7 @@ document.getElementById('horario-form').addEventListener('submit', function(even
     }).then(response => {
         if (response.ok) {
             // Redirigir al usuario a listado-servicios.php
-            window.location.href = 'listado-servicios.php';
+            window.location.href = 'configuracion-servicios.html';
         } else {
             // Manejar error si es necesario
             console.error('Error en la solicitud:', response.statusText);

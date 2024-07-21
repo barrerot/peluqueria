@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configuración - Integración</title>
+    <title>Configuración - Servicios</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -14,33 +14,36 @@
                 <div class="sidebar-sticky">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="http://localhost/peluqueria/">Agenda</a>
+                            <a class="nav-link" href="./peluqueria/">Agenda</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="listado-clientes.html">Clientes</a>
+                            <a class="nav-link" href="listado-clientes.php">Clientes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="mensajes.html">Mensajes</a>
+                            <a class="nav-link" href="mensajes.php">Mensajes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="estadisticas.html">Analíticas</a>
+                            <a class="nav-link" href="estadisticas.php">Analíticas</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="listado-servicios.html">Gestión de Servicios</a>
+                            <a class="nav-link" href="listado-servicios.php">Gestión de Servicios</a>
                         </li>
                     </ul>
                 </div>
             </nav>
 
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                <h2>Integración</h2>
-                <form onsubmit="event.preventDefault(); window.location.href='configuracion-horario.html';">
-                    <div class="form-group">
-                        <label for="api_key">API Key</label>
-                        <input type="text" class="form-control" id="api_key" placeholder="Ingrese su API Key">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                </form>
+                <h2>Servicios</h2>
+                
+                <!-- Indicador de Progreso -->
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">Paso 3 de 4</div>
+                </div>
+
+                <p>¡Pulsa el botón para crear tu primer servicio!</p>
+                
+                <a href="nuevo-servicio.php" class="btn btn-primary">Crear servicio</a>
+                <a href="configuracion-integraciones.html" class="btn btn-primary">Siguiente</a>
             </main>
         </div>
     </div>
