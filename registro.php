@@ -2,29 +2,64 @@
 session_start();
 require_once 'db.php';
 require_once 'Usuario.php';
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'vendor/autoload.php'; // Cargar el autoloader de Composer
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nombre = $_POST['nombre'];
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-    $telefono = $_POST['telefono'];
-    $direccion = $_POST['direccion'];
 
-    $usuario = new Usuario();
-    $usuario->setNombre($nombre);
-    $usuario->setEmail($email);
-    $usuario->setPassword($password);
-    $usuario->setTelefono($telefono);
-    $usuario->setDireccion($direccion);
+    $db = new DB();
+    $conn = $db->getConnection();
 
-    $userId = $usuario->guardar();
-
-    if ($userId) {
-        $_SESSION['user_id'] = $userId;
-        header('Location: configuracion-informacion.html');
+    // Verificar si el usuario ya existe
+    $usuario = new Usuario($conn);
+    if ($usuario->existeUsuario($email)) {
+        $_SESSION['error'] = "Esa cuenta ya existe. Por favor, intente con otro correo electrónico.";
+        header("Location: " . $_ENV['APP_URL'] . "/registro-form.php");
         exit();
+    }
+
+    // Crear usuario
+    $token = bin2hex(random_bytes(16)); // Token para la confirmación del email
+    if ($usuario->crearUsuario($nombre, $email, $password, $token)) {
+        // Enviar email de confirmación usando PHPMailer
+        $enlace = $_ENV['APP_URL'] . "/confirmar.php?token=$token";
+        $mensaje = "Por favor confirma tu registro haciendo clic en el siguiente enlace: $enlace";
+
+        $mail = new PHPMailer(true);
+
+        try {
+            // Configuración del servidor SMTP
+            $mail->isSMTP();
+            $mail->Host = $_ENV['SMTP_HOST'];
+            $mail->SMTPAuth = true;
+            $mail->Username = $_ENV['SMTP_USERNAME']; // Usuario SMTP
+            $mail->Password = $_ENV['SMTP_PASSWORD']; // Contraseña SMTP
+            $mail->SMTPSecure = $_ENV['SMTP_ENCRYPTION'];
+            $mail->Port = $_ENV['SMTP_PORT'];
+
+            // Configuración del correo
+            $mail->setFrom($_ENV['SMTP_USERNAME'], 'Tu Nombre');
+            $mail->addAddress($email);
+
+            $mail->isHTML(true);
+            $mail->Subject = 'Confirma tu cuenta';
+            $mail->Body    = $mensaje;
+
+            $mail->send();
+            echo 'Te hemos enviado un email para confirmar tu cuenta.';
+        } catch (Exception $e) {
+            echo "Error al enviar el mensaje: {$mail->ErrorInfo}";
+        }
     } else {
-        echo "Error al registrar el usuario.";
+        echo "Error al crear el usuario.";
     }
 }
 ?>

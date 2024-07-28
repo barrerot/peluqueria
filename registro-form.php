@@ -15,7 +15,7 @@
                 <div class="sidebar-sticky">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="./peluqueria">Agenda</a>
+                            <a class="nav-link" href="peluqueria.php">Agenda</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="listado-clientes.php">Clientes</a>
@@ -51,7 +51,7 @@
                     </div>
                     <button type="submit" class="btn btn-primary">Registrarse</button>
                 </form>
-                <?php if (isset($_SESSION['error'])): ?>
+                <?php if (isset($_SESSION['error']) && !empty($_SESSION['error'])): ?>
                     <div class="alert alert-danger mt-3">
                         <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
                     </div>
