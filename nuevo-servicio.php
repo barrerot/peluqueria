@@ -49,7 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     header("Location: listado-servicios.php");
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -67,19 +66,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="hidden" name="id" value="<?php echo $id; ?>">
         <div class="form-group">
             <label for="nombre">Nombre del servicio</label>
-            <input type="text" class="form-control" id="nombre" name="nombre" value="<?php echo $nombre; ?>" placeholder="Ingrese el nombre del servicio">
+            <input type="text" class="form-control" id="nombre" name="nombre" value="<?php echo $nombre; ?>" placeholder="Ingrese el nombre del servicio" required>
         </div>
         <div class="form-group">
             <label for="duracion">Duración (minutos)</label>
-            <input type="number" class="form-control" id="duracion" name="duracion" value="<?php echo $duracion; ?>" placeholder="Ingrese la duración del servicio">
+            <input list="duraciones" class="form-control" id="duracion" name="duracion" value="<?php echo $duracion; ?>" placeholder="Ingrese la duración del servicio" required>
+            <datalist id="duraciones">
+                <!-- Opciones generadas por JavaScript -->
+            </datalist>
         </div>
         <div class="form-group">
             <label for="precio">Precio ($)</label>
-            <input type="number" step="0.01" class="form-control" id="precio" name="precio" value="<?php echo $precio; ?>" placeholder="Ingrese el precio del servicio">
+            <input type="number" step="0.01" class="form-control" id="precio" name="precio" value="<?php echo $precio; ?>" placeholder="Ingrese el precio del servicio" required>
         </div>
         <div class="form-group">
             <label for="negocio_id">Negocio</label>
-            <select class="form-control" id="negocio_id" name="negocio_id">
+            <select class="form-control" id="negocio_id" name="negocio_id" required>
                 <?php foreach ($negocios as $negocio): ?>
                     <option value="<?php echo $negocio['id']; ?>" <?php echo $negocio_id == $negocio['id'] ? 'selected' : ''; ?>>
                         <?php echo $negocio['nombre']; ?>
@@ -93,5 +95,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.amazonaws.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const duraciones = document.getElementById('duraciones');
+        for (let i = 5; i <= 120; i += 5) {
+            const option = document.createElement('option');
+            option.value = i;
+            duraciones.appendChild(option);
+        }
+    });
+</script>
 </body>
 </html>

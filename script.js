@@ -29,7 +29,7 @@ function toggleDay(day) {
     if (dayContent.classList.contains('no-disponible')) {
         dayContent.classList.remove('no-disponible');
         dayContent.innerHTML = '';
-        dayContent.appendChild(createIntervalRow(day));
+        dayContent.appendChild(createIntervalRow(day, "09:00", "14:00"));  // Primer intervalo predeterminado
     } else {
         dayContent.classList.add('no-disponible');
         dayContent.innerHTML = 'No disponible';
@@ -115,7 +115,14 @@ function confirmDuplicate() {
 function addInterval(day) {
     const dayContent = document.getElementById(`${day}-content`);
     if (!dayContent.classList.contains('no-disponible')) {
-        dayContent.appendChild(createIntervalRow(day));
+        const intervals = dayContent.getElementsByClassName('interval-row');
+        if (intervals.length === 0) {
+            dayContent.appendChild(createIntervalRow(day, "09:00", "14:00")); // Primer intervalo predeterminado
+        } else if (intervals.length === 1) {
+            dayContent.appendChild(createIntervalRow(day, "16:00", "20:00")); // Segundo intervalo predeterminado
+        } else {
+            dayContent.appendChild(createIntervalRow(day)); // Intervalos adicionales sin valores predeterminados
+        }
     }
 }
 
