@@ -18,12 +18,15 @@ if (isset($_GET['token'])) {
         $user_id = $usuario->obtenerUsuarioPorToken($token);
         if ($user_id !== null) {
             $_SESSION['user_id'] = $user_id;
+            $_SESSION['success'] = 'Cuenta activada exitosamente. Por favor, completa tu información.';
             header("Location: " . $_ENV['APP_URL'] . "/configuracion-informacion.html");
         } else {
-            echo "Error al obtener el ID del usuario.";
+            $_SESSION['error'] = "Error al obtener el ID del usuario.";
+            header("Location: " . $_ENV['APP_URL'] . "/registro-form.php");
         }
     } else {
-        echo "Error al activar la cuenta.";
+        $_SESSION['error'] = "Error al activar la cuenta.";
+        header("Location: " . $_ENV['APP_URL'] . "/registro-form.php");
     }
 }
 ?>

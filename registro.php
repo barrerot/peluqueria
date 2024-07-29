@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($usuario->crearUsuario($nombre, $email, $password, $token)) {
         // Enviar email de confirmación usando PHPMailer
         $enlace = $_ENV['APP_URL'] . "/confirmar.php?token=$token";
-        $mensaje = "Por favor confirma tu registro haciendo clic en el siguiente enlace: $enlace";
+        $mensaje = "Para finalizar el registro, por favor confirma tu registro haciendo clic en el siguiente enlace: $enlace";
 
         $mail = new PHPMailer(true);
 
@@ -54,12 +54,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $mail->Body    = $mensaje;
 
             $mail->send();
-            echo 'Te hemos enviado un email para confirmar tu cuenta.';
+            $_SESSION['success'] = 'Te hemos enviado un email para confirmar tu cuenta. Por favor, sigue las instrucciones del correo para finalizar el registro.';
+            header("Location: " . $_ENV['APP_URL'] . "/registro-form.php");
         } catch (Exception $e) {
-            echo "Error al enviar el mensaje: {$mail->ErrorInfo}";
+            $_SESSION['error'] = "Error al enviar el mensaje: {$mail->ErrorInfo}";
+            header("Location: " . $_ENV['APP_URL'] . "/registro-form.php");
         }
     } else {
-        echo "Error al crear el usuario.";
+        $_SESSION['error'] = "Error al crear el usuario.";
+        header("Location: " . $_ENV['APP_URL'] . "/registro-form.php");
     }
 }
 ?>
