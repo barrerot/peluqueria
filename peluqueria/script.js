@@ -26,6 +26,19 @@ $(document).ready(function() {
   function initializeCalendar(businessHours) {
     var calendarEl = document.getElementById('calendar');
     calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'timeGridWeek',  // Establecer la vista por defecto a "timeGridWeek"
+      locale: 'es',                 // Configurar idioma español
+      nowIndicator: true,           // Mostrar línea en la hora actual
+      eventTimeFormat: {            // Configuración para el formato de tiempo en 24 horas
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      },
+      slotLabelFormat: {            // Formato de las etiquetas de las filas de tiempo en 24 horas
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      },
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',
