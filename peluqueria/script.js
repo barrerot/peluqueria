@@ -1,6 +1,17 @@
 $(document).ready(function() {
   var calendar;
 
+  // Mapeo de días de la semana a índices de FullCalendar
+  var dayMap = {
+    "Lunes": 1,
+    "Martes": 2,
+    "Miércoles": 3,
+    "Jueves": 4,
+    "Viernes": 5,
+    "Sábado": 6,
+    "Domingo": 0
+  };
+
   // Obtener horarios de apertura desde la base de datos
   $.ajax({
     url: 'fetch_horarios.php',
@@ -9,26 +20,33 @@ $(document).ready(function() {
     success: function(data) {
       var businessHours = data.map(function(horario) {
         return {
-          daysOfWeek: [horario.dia_semana], // Días de la semana (1: Lunes, ..., 7: Domingo)
-          startTime: horario.hora_apertura, // Hora de apertura
-          endTime: horario.hora_cierre // Hora de cierre
+          daysOfWeek: [dayMap[horario.dia]], // Días de la semana
+          startTime: horario.hora_inicio, // Hora de apertura
+          endTime: horario.hora_fin // Hora de cierre
         };
       });
 
+      // Encontrar los límites de tiempo más temprano y más tarde para slotMinTime y slotMaxTime
+      var minStartTime = Math.min(...data.map(h => parseInt(h.hora_inicio.split(":")[0])));
+      var maxEndTime = Math.max(...data.map(h => parseInt(h.hora_fin.split(":")[0])));
+
       // Inicializar el calendario después de obtener los horarios
-      initializeCalendar(businessHours);
+      initializeCalendar(businessHours, minStartTime, maxEndTime);
     },
     error: function() {
       alert('Error al cargar los horarios de apertura');
     }
   });
 
-  function initializeCalendar(businessHours) {
+  function initializeCalendar(businessHours, minStartTime, maxEndTime) {
     var calendarEl = document.getElementById('calendar');
     calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'timeGridWeek',  // Establecer la vista por defecto a "timeGridWeek"
       locale: 'es',                 // Configurar idioma español
       nowIndicator: true,           // Mostrar línea en la hora actual
+      businessHours: businessHours, // Definir horarios de apertura
+      slotMinTime: minStartTime + ":00:00",  // Hora de inicio visible
+      slotMaxTime: (maxEndTime + 1) + ":00:00",  // Hora de fin visible
       eventTimeFormat: {            // Configuración para el formato de tiempo en 24 horas
         hour: '2-digit',
         minute: '2-digit',
@@ -45,7 +63,6 @@ $(document).ready(function() {
         right: 'dayGridMonth,timeGridWeek,timeGridDay'
       },
       selectable: true,
-      businessHours: businessHours,
       events: {
         url: 'fetch_events.php',
         method: 'GET',
