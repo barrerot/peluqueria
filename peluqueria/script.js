@@ -110,11 +110,16 @@ $(document).ready(function() {
         $('#eventForm')[0].reset();
         $('#eventModal').css('display', 'block');
 
-        // Formatear la fecha seleccionada para el campo datetime-local
+        // Establecer la fecha de inicio y fin basadas en la selección
         var startDate = info.start;
-        var formattedDate = moment(startDate).format('YYYY-MM-DDTHH:mm');
-        $('#start').val(formattedDate); // Establecer la fecha de inicio
-        $('#end').val('');  // Limpiar el campo de fin
+        var endDate = info.end;
+
+        var formattedStartDate = moment(startDate).format('YYYY-MM-DDTHH:mm');
+        var formattedEndDate = moment(endDate).format('YYYY-MM-DDTHH:mm');
+
+        $('#start').val(formattedStartDate); // Establecer la fecha de inicio
+        $('#end').val(formattedEndDate); // Establecer la fecha de fin
+
         $('input[name="service"]').prop('checked', false);  // Desmarcar todas las casillas de verificación
         $('#deleteButton').hide();  // Ocultar botón de borrar en la creación
 
