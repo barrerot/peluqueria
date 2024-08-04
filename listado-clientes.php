@@ -1,10 +1,32 @@
 <?php
-require_once 'Cliente.php';
+session_start();
+require_once 'db.php';
+require_once 'Usuario.php';
 
-use App\Cliente;
+// Verificación del token de autenticación
+if (isset($_COOKIE['auth_token'])) {
+    $authToken = $_COOKIE['auth_token'];
 
-$cliente = new Cliente();
-$clientes = $cliente->obtenerClientes();
+    $db = new DB();
+    $conn = $db->getConnection();
+    $usuario = new Usuario($conn);
+
+    $userData = $usuario->obtenerUsuarioPorAuthToken($authToken);
+
+    if ($userData) {
+        $_SESSION['user_id'] = $userData['id'];
+        // El usuario está autenticado, continúa con el contenido de la página
+    } else {
+        // Token inválido, eliminar cookie y redirigir al login
+        setcookie('auth_token', '', time() - 3600, "/", "", true, true);
+        header("Location: login-form.php");
+        exit();
+    }
+} else if (!isset($_SESSION['user_id'])) {
+    // No hay sesión ni cookie de autenticación, redirigir al login
+    header("Location: login-form.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -17,58 +39,11 @@ $clientes = $cliente->obtenerClientes();
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-                <div class="sidebar-sticky">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="./peluqueria/">Agenda</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="listado-clientes.php">Clientes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="mensajes.php">Mensajes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="estadisticas.php">Analíticas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="listado-servicios.php">Servicios</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                <h2>Listado de Clientes</h2>
-                <a href="nuevo-cliente.php" class="btn btn-primary mb-3">Añadir Cliente</a>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Teléfono</th>
-                            <th>Email</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($clientes as $cliente): ?>
-                            <tr>
-                                <td><?php echo $cliente['nombre']; ?></td>
-                                <td><?php echo $cliente['telefono']; ?></td>
-                                <td><?php echo $cliente['email']; ?></td>
-                                <td>
-                                    <a href="detalle-cliente.php?id=<?php echo $cliente['id']; ?>" class="btn btn-info">Ver</a>
-                                    <a href="editar-cliente.php?id=<?php echo $cliente['id']; ?>" class="btn btn-warning">Editar</a>
-                                    <a href="eliminar-cliente.php?id=<?php echo $cliente['id']; ?>" class="btn btn-danger">Eliminar</a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </main>
-        </div>
+    <!-- Contenido de la página -->
+    <div class="container">
+        <h1>Listado de Clientes</h1>
+        <p>Esta es la sección donde se muestran todos los clientes registrados.</p>
+        <!-- Aquí iría el código para mostrar el listado de clientes -->
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

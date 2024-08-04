@@ -10,26 +10,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $db = new DB();
     $conn = $db->getConnection();
 
-    if ($conn->connect_error) {
-        die("Conexión fallida: " . $conn->connect_error);
-    }
-
     $usuario = new Usuario($conn);
     $userData = $usuario->obtenerUsuarioPorEmail($email);
 
-    // Verificación de credenciales
     if ($userData && password_verify($password, $userData['password'])) {
-        // Credenciales válidas, iniciar sesión
         $_SESSION['user_id'] = $userData['id'];
+
+        // Si el usuario selecciona "Mantenerme conectado"
+        if (isset($_POST['remember'])) {
+            $authToken = bin2hex(random_bytes(32)); // Genera un token de 64 caracteres
+            setcookie('auth_token', $authToken, time() + (86400 * 30), "/", "", true, true); // Caduca en 30 días, Secure, HttpOnly
+            $usuario->almacenarAuthToken($userData['id'], $authToken);
+        }
+
         header("Location: ./peluqueria/");
         exit();
     } else {
-        // Credenciales incorrectas
         $_SESSION['error'] = "Credenciales incorrectas. Por favor, inténtelo de nuevo.";
+        header("Location: login-form.php");
+        exit();
     }
-
-    // Redirigir de vuelta al formulario de login con mensaje de error
-    header("Location: login-form.php");
-    exit();
 }
-?>

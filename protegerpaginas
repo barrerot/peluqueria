@@ -1,0 +1,27 @@
+session_start();
+require_once 'db.php';
+require_once 'Usuario.php';
+
+if (isset($_COOKIE['auth_token'])) {
+    $authToken = $_COOKIE['auth_token'];
+
+    $db = new DB();
+    $conn = $db->getConnection();
+    $usuario = new Usuario($conn);
+
+    $userData = $usuario->obtenerUsuarioPorAuthToken($authToken);
+
+    if ($userData) {
+        $_SESSION['user_id'] = $userData['id'];
+        // El usuario está autenticado
+    } else {
+        // Token inválido, redirigir al login
+        setcookie('auth_token', '', time() - 3600, "/", "", true, true); // Eliminar cookie
+        header("Location: login-form.php");
+        exit();
+    }
+} else if (!isset($_SESSION['user_id'])) {
+    // No hay sesión ni cookie de autenticación, redirigir al login
+    header("Location: login-form.php");
+    exit();
+}
