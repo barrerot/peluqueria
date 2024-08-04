@@ -42,9 +42,9 @@ class Usuario {
     }
 
     // Crea un nuevo usuario en la base de datos
-    public function crearUsuario($nombre, $email, $password, $token) {
+    public function crearUsuario($nombre, $email, $hashedPassword, $token) {
         $stmt = $this->conn->prepare("INSERT INTO usuarios (nombre, email, password, token, activo) VALUES (?, ?, ?, ?, 0)");
-        $stmt->bind_param("ssss", $nombre, $email, $password, $token);
+        $stmt->bind_param("ssss", $nombre, $email, $hashedPassword, $token);
         return $stmt->execute();
     }
 

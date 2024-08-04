@@ -5,7 +5,7 @@ require_once 'Usuario.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'vendor/autoload.php'; // Cargar el autoloader de Composer
+require 'vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
@@ -13,12 +13,14 @@ $dotenv->load();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nombre = $_POST['nombre'];
     $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+    $password = $_POST['password'];
+
+    // Generar el hash de la contraseña
+    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
     $db = new DB();
     $conn = $db->getConnection();
 
-    // Verificar si el usuario ya existe
     $usuario = new Usuario($conn);
     if ($usuario->existeUsuario($email)) {
         $_SESSION['error'] = "Esa cuenta ya existe. Por favor, intente con otro correo electrónico.";
@@ -26,9 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
     }
 
-    // Crear usuario
     $token = bin2hex(random_bytes(16)); // Token para la confirmación del email
-    if ($usuario->crearUsuario($nombre, $email, $password, $token)) {
+    if ($usuario->crearUsuario($nombre, $email, $hashedPassword, $token)) {
         // Enviar email de confirmación usando PHPMailer
         $enlace = $_ENV['APP_URL'] . "/confirmar.php?token=$token";
         $mensaje = "Para finalizar el registro, por favor confirma tu registro haciendo clic en el siguiente enlace: $enlace";
@@ -40,8 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $mail->isSMTP();
             $mail->Host = $_ENV['SMTP_HOST'];
             $mail->SMTPAuth = true;
-            $mail->Username = $_ENV['SMTP_USERNAME']; // Usuario SMTP
-            $mail->Password = $_ENV['SMTP_PASSWORD']; // Contraseña SMTP
+            $mail->Username = $_ENV['SMTP_USERNAME'];
+            $mail->Password = $_ENV['SMTP_PASSWORD'];
             $mail->SMTPSecure = $_ENV['SMTP_ENCRYPTION'];
             $mail->Port = $_ENV['SMTP_PORT'];
 
