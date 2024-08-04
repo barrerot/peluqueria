@@ -103,7 +103,21 @@ $(document).ready(function() {
 
         // Guardar el ID del evento para futuras referencias
         $('#eventForm').data('eventId', info.event.id);
+
+        // Comprobar si es un evento personal y rellenar el motivo si aplica
+        if (info.event.extendedProps.personal) {
+          $('#personalEvent').prop('checked', true);
+          $('#personalTitleLabel').show();
+          $('#personalTitle').show().val(info.event.title);
+          $('#cliente').prop('disabled', true); // Desactivar el select de cliente
+        } else {
+          $('#personalEvent').prop('checked', false);
+          $('#personalTitleLabel').hide();
+          $('#personalTitle').hide().val('');
+          $('#cliente').prop('disabled', false); // Activar el select de cliente
+        }
       },
+
       select: function(info) {
         console.log('Seleccionar rango:', info);
         // Limpiar todos los campos del formulario al abrir el modal
@@ -125,12 +139,18 @@ $(document).ready(function() {
 
         // Limpiar el enlace de "Detalle Cliente"
         $('#detalleClienteLink').attr('href', '#');
+
+        // Resetear campos de evento personal
+        $('#personalEvent').prop('checked', false);
+        $('#personalTitleLabel').hide();
+        $('#personalTitle').hide().val('');
+        $('#cliente').prop('disabled', false); // Activar el select de cliente
       },
       editable: true,
       eventDidMount: function(info) {
         let startTime = info.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         let endTime = info.event.end ? info.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-        let title = info.event.extendedProps.cliente_nombre; // Mostrar el nombre del cliente
+        let title = info.event.title; // Utilizar el título del evento directamente
 
         let innerHtml = `
           <div class="fc-event-time">${startTime} - ${endTime}</div>
@@ -234,6 +254,8 @@ $(document).ready(function() {
     var clienteId = $('#cliente').val();
     var start = $('#start').val();
     var end = $('#end').val();
+    var personalEvent = $('#personalEvent').is(':checked');
+    var personalTitle = $('#personalTitle').val();
     var services = $('input[name="service"]:checked').map(function() {
       return { id: $(this).val(), duracion: $(this).data('duracion') };
     }).get();
@@ -243,32 +265,35 @@ $(document).ready(function() {
       cliente_id: clienteId,
       start: start,
       end: end,
+      personal: personalEvent,
+      personalTitle: personalTitle,
       services: JSON.stringify(services)
     };
 
+    if (personalEvent) {
+      eventData.title = personalTitle;
+      eventData.cliente_id = null; // Remover cliente si es un evento personal
+    }
+
     if (eventId) {
+      // Actualizar evento existente
       $.ajax({
         url: 'update_event.php',
         method: 'POST',
-        data: {
-          id: eventId,
-          cliente_id: clienteId,
-          start: start,
-          end: end,
-          services: JSON.stringify(services)
-        },
+        data: { ...eventData, id: eventId },
         success: function(response) {
-          calendar.refetchEvents(); // Refrescar los eventos en el calendario
+          calendar.refetchEvents();
           closeModal();
         }
       });
     } else {
+      // Crear nuevo evento
       $.ajax({
         url: 'add_event.php',
         method: 'POST',
         data: eventData,
         success: function(eventId) {
-          calendar.refetchEvents(); // Refrescar los eventos en el calendario
+          calendar.refetchEvents();
           closeModal();
         }
       });
@@ -284,7 +309,7 @@ $(document).ready(function() {
         method: 'POST',
         data: { id: eventId },
         success: function(response) {
-          calendar.refetchEvents(); // Refrescar los eventos en el calendario
+          calendar.refetchEvents();
           closeModal();
         }
       });
@@ -298,6 +323,19 @@ $(document).ready(function() {
       $('#detalleClienteLink').attr('href', '../detalle-cliente.php?id=' + clienteId);
     } else {
       $('#detalleClienteLink').attr('href', '#');
+    }
+  });
+
+  // Manejar el cambio en el checkbox de evento personal
+  $('#personalEvent').on('change', function() {
+    if ($(this).is(':checked')) {
+      $('#personalTitleLabel').show();
+      $('#personalTitle').show();
+      $('#cliente').prop('disabled', true); // Desactivar el select de cliente
+    } else {
+      $('#personalTitleLabel').hide();
+      $('#personalTitle').hide().val('');
+      $('#cliente').prop('disabled', false); // Activar el select de cliente
     }
   });
 });

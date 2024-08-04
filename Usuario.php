@@ -36,5 +36,14 @@ class Usuario {
         }
         return null;
     }
+
+    // Nueva función para obtener datos del usuario por email
+    public function obtenerUsuarioPorEmail($email) {
+        $stmt = $this->conn->prepare("SELECT id, password FROM usuarios WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    }
 }
 ?>

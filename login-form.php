@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso de Usuario</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <?php
+    session_start();
+    ?>
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                <div class="sidebar-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="./peluqueria/">Agenda</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="listado-clientes.php">Clientes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="mensajes.php">Mensajes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="estadisticas.php">Analíticas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="listado-servicios.php">Gestión de Servicios</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                <h2>Acceso de Usuario</h2>
+                
+                <div id="messages">
+                    <?php if (isset($_SESSION['error']) && !empty($_SESSION['error'])): ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                
+                <form action="login.php" method="POST">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Ingrese su email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Ingrese su contraseña" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Recordar contraseña</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Acceder</button>
+                </form>
+            </main>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            if (localStorage.getItem('email')) {
+                document.getElementById('email').value = localStorage.getItem('email');
+                document.getElementById('password').value = localStorage.getItem('password');
+                document.getElementById('remember').checked = true;
+            }
+        });
+    </script>
+</body>
+</html>
