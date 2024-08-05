@@ -14,7 +14,14 @@ $db = new DB();
 $conn = $db->getConnection();
 
 $servicio = new Servicio($conn);
-$servicios = $servicio->getAll();
+$negocios = $servicio->getNegocios($user_id);
+
+if (!empty($negocios)) {
+    $negocio_id = $negocios[0]['id'];
+    $servicios = $servicio->getAllByNegocioId($negocio_id);
+} else {
+    $servicios = [];
+}
 
 if (isset($_POST['delete'])) {
     $id = $_POST['id'];
@@ -22,7 +29,6 @@ if (isset($_POST['delete'])) {
     header("Location: listado-servicios.php");
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,10 +66,6 @@ if (isset($_POST['delete'])) {
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
             <h2>Listado de Servicios</h2>
-            <!-- Indicador de Progreso -->
-            <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">Paso 3 de 4</div>
-                </div>
             <a href="nuevo-servicio.php" class="btn btn-primary">Añadir Nuevo Servicio</a>
             <table class="table table-bordered">
                 <thead>
@@ -96,6 +98,6 @@ if (isset($_POST['delete'])) {
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.amazonaws.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -1,26 +1,24 @@
 <?php
-session_start(); // Asegúrate de iniciar la sesión
+session_start();
 require 'db_connect.php';
-
-if (!isset($_SESSION['user_id'])) {
-    die('Error: No se ha encontrado el ID del cliente en la sesión.');
-}
-
-$cliente_id = $_SESSION['user_id']; // Obtener el ID del cliente desde la sesión
-echo 'ID del cliente: ' . $cliente_id . '<br>';
 
 $start = $_POST['start'];
 $end = $_POST['end'];
-$personal = isset($_POST['personal']) ? $_POST['personal'] : false;
-$personalTitle = $_POST['personalTitle'];
 $services = json_decode($_POST['services'], true);
+$personal = isset($_POST['personal']) && $_POST['personal'] === 'true';
+$title = '';
+$cliente_id = $_POST['cliente_id'];
 
-// Determinar el título del evento
+// Verificar si el evento es personal
 if ($personal) {
-    // Si es un evento personal, usar el título del motivo
-    $title = $personalTitle;
+    $title = $_POST['title']; // Usar el motivo como título para eventos personales
+    $cliente_id = -1; // Establecer clienteId como -1 para eventos personales
 } else {
-    // Si no es personal, usar el nombre del cliente
+    if ($cliente_id == -1) {
+        die('Error: Cliente no seleccionado para evento no personal.');
+    }
+
+    // Obtener el nombre del cliente basado en el ID para usarlo como título si no es personal
     $sql = "SELECT nombre FROM clientes WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $cliente_id);
@@ -33,7 +31,6 @@ if ($personal) {
     }
 
     $title = $cliente['nombre'];
-    echo 'Nombre del cliente: ' . $title . '<br>';
 }
 
 // Insertar la cita en la tabla citas
@@ -42,8 +39,7 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("isss", $cliente_id, $title, $start, $end);
 if ($stmt->execute()) {
     $cita_id = $stmt->insert_id;
-    echo 'Cita creada con ID: ' . $cita_id . '<br>';
-    
+
     // Insertar los servicios en la tabla citas_servicios
     $sql_services = "INSERT INTO citas_servicios (cita_id, servicio_id) VALUES (?, ?)";
     $stmt_services = $conn->prepare($sql_services);
@@ -60,3 +56,4 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $conn->close();
+?>

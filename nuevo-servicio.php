@@ -19,9 +19,8 @@ $id = '';
 $nombre = '';
 $duracion = '';
 $precio = '';
-$negocio_id = '';
 
-$negocios = $servicio->getNegocios($user_id);
+// No necesitamos obtener negocios ya que solo hay uno por usuario
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
@@ -30,7 +29,7 @@ if (isset($_GET['id'])) {
         $nombre = $servicioData['nombre'];
         $duracion = $servicioData['duracion'];
         $precio = $servicioData['precio'];
-        $negocio_id = $servicioData['negocio_id'];
+        // negocio_id ya no es necesario
     }
 }
 
@@ -39,7 +38,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = $_POST['nombre'];
     $duracion = $_POST['duracion'];
     $precio = $_POST['precio'];
-    $negocio_id = $_POST['negocio_id'];
+    
+    // Obtener el negocio_id del usuario
+    $negocio_id = $servicio->getNegocios($user_id)[0]['id'];
 
     if ($id) {
         $servicio->update($id, $nombre, $duracion, $precio, $negocio_id);
@@ -76,25 +77,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </datalist>
         </div>
         <div class="form-group">
-            <label for="precio">Precio ($)</label>
+            <label for="precio">Precio (€)</label>
             <input type="number" step="0.01" class="form-control" id="precio" name="precio" value="<?php echo $precio; ?>" placeholder="Ingrese el precio del servicio" required>
         </div>
-        <div class="form-group">
-            <label for="negocio_id">Negocio</label>
-            <select class="form-control" id="negocio_id" name="negocio_id" required>
-                <?php foreach ($negocios as $negocio): ?>
-                    <option value="<?php echo $negocio['id']; ?>" <?php echo $negocio_id == $negocio['id'] ? 'selected' : ''; ?>>
-                        <?php echo $negocio['nombre']; ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
+        <!-- Eliminamos la selección de negocio -->
         <button type="submit" class="btn btn-primary">Guardar</button>
     </form>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.amazonaws.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const duraciones = document.getElementById('duraciones');

@@ -7,8 +7,18 @@ class Servicio {
     }
 
     public function getAll() {
+        // Este método puede ser obsoleto o modificado si no se necesita listar todos los servicios sin filtro
         $sql = "SELECT * FROM servicios";
         $result = $this->conn->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function getAllByNegocioId($negocio_id) {
+        $sql = "SELECT * FROM servicios WHERE negocio_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $negocio_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
