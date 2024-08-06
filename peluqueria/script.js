@@ -47,6 +47,8 @@ $(document).ready(function() {
       businessHours: businessHours, // Definir horarios de apertura
       slotMinTime: minStartTime + ":00:00",  // Hora de inicio visible
       slotMaxTime: (maxEndTime + 1) + ":00:00",  // Hora de fin visible
+      slotDuration: "00:15:00",     // **Agregar esta línea** para intervalos de 15 minutos
+
       eventTimeFormat: {            // Configuración para el formato de tiempo en 24 horas
         hour: '2-digit',
         minute: '2-digit',
