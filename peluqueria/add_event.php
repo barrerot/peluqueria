@@ -11,7 +11,7 @@ $cliente_id = $_POST['cliente_id'];
 
 // Verificar si el evento es personal
 if ($personal) {
-    $title = $_POST['title']; // Usar el motivo como título para eventos personales
+    $title = $_POST['personalTitle']; // Usar el motivo como título para eventos personales
     $cliente_id = -1; // Establecer clienteId como -1 para eventos personales
 } else {
     if ($cliente_id == -1) {

@@ -86,10 +86,8 @@ $(document).ready(function() {
         $('#eventForm')[0].reset();
         $('#eventModal').css('display', 'block');
         $('#cliente').val(info.event.extendedProps.cliente_id); // Establecer el cliente en el select
-        $('#start').val(moment(info.event.start).format('YYYY-MM-DDTHH:mm'));
-        if (info.event.end) {
-          $('#end').val(moment(info.event.end).format('YYYY-MM-DDTHH:mm'));
-        }
+        $('#date').val(moment(info.event.start).format('YYYY-MM-DD'));
+        $('#timeRange').val(moment(info.event.start).format('HH:mm') + ' - ' + moment(info.event.end).format('HH:mm'));
 
         // Actualizar el enlace de "Detalle Cliente" con el ID del cliente
         var clienteId = info.event.extendedProps.cliente_id;
@@ -126,15 +124,9 @@ $(document).ready(function() {
         $('#eventForm')[0].reset();
         $('#eventModal').css('display', 'block');
 
-        // Establecer la fecha de inicio y fin basadas en la selección
-        var startDate = info.start;
-        var endDate = info.end;
-
-        var formattedStartDate = moment(startDate).format('YYYY-MM-DDTHH:mm');
-        var formattedEndDate = moment(endDate).format('YYYY-MM-DDTHH:mm');
-
-        $('#start').val(formattedStartDate); // Establecer la fecha de inicio
-        $('#end').val(formattedEndDate); // Establecer la fecha de fin
+        // Establecer la fecha y hora inicial y final
+        $('#date').val(moment(info.start).format('YYYY-MM-DD'));
+        $('#timeRange').val(moment(info.start).format('HH:mm') + ' - ' + moment(info.end).format('HH:mm'));
 
         $('input[name="service"]').prop('checked', false);  // Desmarcar todas las casillas de verificación
         $('#deleteButton').hide();  // Ocultar botón de borrar en la creación
@@ -227,18 +219,19 @@ $(document).ready(function() {
 
   // Calcular la hora de fin cuando se seleccionan servicios
   $('#serviceContainer').on('change', 'input[name="service"]', function() {
-    var start = $('#start').val();
-    if (start) {
+    var date = $('#date').val();
+    var timeRange = $('#timeRange').val();
+    if (date && timeRange) {
       var totalDuration = 0;
       $('input[name="service"]:checked').each(function() {
         totalDuration += parseInt($(this).data('duracion'), 10);
       });
-      var startDate = moment(start);
-      var endDate = startDate.clone().add(totalDuration, 'minutes');
-      var formattedEndDate = endDate.format('YYYY-MM-DDTHH:mm');
-      $('#end').val(formattedEndDate);
-    } else {
-      $('#end').val('');
+
+      var [startTime, endTime] = timeRange.split(' - ');
+      var startDateTime = moment(date + ' ' + startTime, 'YYYY-MM-DD HH:mm');
+      var endDateTime = startDateTime.clone().add(totalDuration, 'minutes');
+      var formattedEndDateTime = endDateTime.format('HH:mm');
+      $('#timeRange').val(startTime + ' - ' + formattedEndDateTime);
     }
   });
 
@@ -254,8 +247,11 @@ $(document).ready(function() {
     e.preventDefault();
     
     var clienteId = $('#cliente').val();
-    var start = $('#start').val();
-    var end = $('#end').val();
+    var date = $('#date').val();
+    var timeRange = $('#timeRange').val();
+    var [startTime, endTime] = timeRange.split(' - ');
+    var start = moment(date + ' ' + startTime, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD HH:mm:ss');
+    var end = moment(date + ' ' + endTime, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD HH:mm:ss');
     var personalEvent = $('#personalEvent').is(':checked');
     var personalTitle = $('#personalTitle').val();
     var services = $('input[name="service"]:checked').map(function() {
