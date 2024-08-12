@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calendario de Citas</title>
   <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.5.0/main.min.css' rel='stylesheet' />
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  
   <style>
     #eventModal {
       display: none;
@@ -15,71 +17,152 @@
       width: 100%;
       height: 100%;
       overflow: auto;
-      background-color: rgb(0,0,0);
       background-color: rgba(0,0,0,0.4);
+      justify-content: center;
+      align-items: center;
+      display: flex;
     }
 
     .modal-content {
       background-color: #fefefe;
-      margin: 15% auto;
       padding: 20px;
       border: 1px solid #888;
-      width: 80%;
+      width: 50%; /* Cambiar el ancho para mejor apariencia */
+      max-width: 600px; /* Establecer un ancho máximo */
+      margin: auto; /* Centrar el modal */
     }
 
     .close {
-      color: #aaa;
+      color: #000; /* Color negro para la "X" */
       float: right;
       font-size: 28px;
       font-weight: bold;
+      cursor: pointer;
     }
 
     .close:hover,
     .close:focus {
-      color: black;
+      color: #f00; /* Cambiar color a rojo al hacer hover */
       text-decoration: none;
-      cursor: pointer;
     }
+
+    #calendar {
+      margin-top: 20px;
+    }
+
+    /* Estilo para enlaces en negro sin subrayado */
+    .nav-link {
+      color: #000 !important;
+      text-decoration: none !important;
+    }
+
+    .nav-link:hover {
+      color: #555 !important; /* Cambiar a gris oscuro al hacer hover */
+      text-decoration: none !important;
+    }
+
+    /* Estilos para los eventos en el calendario */
+    .fc-event, .fc-event-dot {
+      background-color: #007bff; /* Color de fondo del evento */
+      border: none; /* Sin bordes para el evento */
+      color: #fff; /* Texto en blanco */
+    }
+
+    .fc-event-title, .fc-event-time {
+      color: #fff !important; /* Color blanco para el título y la hora */
+      font-weight: bold; /* Texto en negrita */
+    }
+
+    .fc-event-title a {
+      color: #fff !important; /* Asegura que los enlaces dentro de eventos también sean blancos */
+      text-decoration: none !important; /* Sin subrayado */
+    }
+
+    .fc-event:hover {
+      background-color: #0056b3; /* Fondo más oscuro al hacer hover */
+    }
+  
+  .fc-col-header-cell-cushion {
+    color: inherit !important;
+    text-decoration: none !important;
+    pointer-events: none !important;
+    cursor: default !important;
+  }
+
   </style>
 </head>
 <body>
+  <h2 class="text-center my-4">Agenda</h2>
 
-  <div id='calendar'></div>
+<div class="container-fluid">
+  <div class="row">
+    <!-- Inicio del menú -->
+    <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+      <div class="sidebar-sticky">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Agenda</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../listado-clientes.php">Clientes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../mensajes.php">Mensajes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../estadisticas.php">Analíticas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../listado-servicios.php">Servicios</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <!-- Fin del menú -->
 
-  <!-- Modal -->
-  <div id="eventModal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <form id="eventForm">
-        <label for="cliente">Cliente:</label>
-        <select id="cliente" name="cliente" required>
-          <option value="">Seleccione un cliente</option>
-        </select>
-        <a id="detalleClienteLink" href="#" target="_blank">Detalle Cliente</a>
-        <br><br>
-        <label for="date">Fecha:</label>
-        <input type="date" id="date" name="date" required>
-        <br><br>
-        <label for="timeRange">Hora (Inicio - Fin):</label>
-        <input type="text" id="timeRange" name="timeRange" placeholder="HH:MM - HH:MM" required>
-        <br><br>
-        <label>Servicio:</label>
-        <div id="serviceContainer"></div>
-        <br><br>
-        <label for="personalEvent">Evento Personal:</label>
-        <input type="checkbox" id="personalEvent" name="personalEvent">
-        <label for="personalTitle" id="personalTitleLabel" style="display:none;">Motivo:</label>
-        <input type="text" id="personalTitle" name="personalTitle" style="display:none;">
-        <br><br>
-        <button type="submit">Guardar</button>
-        <button type="button" id="deleteButton">Eliminar</button>
-      </form>
-    </div>
+    <!-- Inicio del contenido principal -->
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+      <div id='calendar'></div>
+    </main>
+    <!-- Fin del contenido principal -->
   </div>
+</div>
 
-  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.5.0/main.min.js'></script>
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-  <script src="script.js"></script>
+<!-- Modal -->
+<div id="eventModal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <form id="eventForm">
+      <label for="cliente">Cliente:</label>
+      <select id="cliente" name="cliente" required>
+        <option value="">Seleccione un cliente</option>
+      </select>
+      <a id="detalleClienteLink" href="#" target="_blank">Detalle Cliente</a>
+      <br><br>
+      <label for="date">Fecha:</label>
+      <input type="date" id="date" name="date" required>
+      <br><br>
+      <label for="timeRange">Hora (Inicio - Fin):</label>
+      <input type="text" id="timeRange" name="timeRange" placeholder="HH:MM - HH:MM" required>
+      <br><br>
+      <label>Servicio:</label>
+      <div id="serviceContainer"></div>
+      <br><br>
+      <label for="personalEvent">Evento Personal:</label>
+      <input type="checkbox" id="personalEvent" name="personalEvent">
+      <label for="personalTitle" id="personalTitleLabel" style="display:none;">Motivo:</label>
+      <input type="text" id="personalTitle" name="personalTitle" style="display:none;">
+      <br><br>
+      <button type="submit">Guardar</button>
+      <button type="button" id="deleteButton">Eliminar</button>
+    </form>
+  </div>
+</div>
+
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.5.0/main.min.js'></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

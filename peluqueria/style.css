@@ -32,3 +32,10 @@
   text-decoration: none;
   cursor: pointer;
 }
+
+.fc-col-header-cell-cushion a {
+  color: inherit;        /* Usar el color del texto original */
+  text-decoration: none; /* Eliminar el subrayado */
+  pointer-events: none;  /* Desactivar la acción de clic */
+  cursor: default;       /* Cambiar el cursor para mostrar que no es un enlace */
+}
