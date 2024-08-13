@@ -12,6 +12,9 @@ $(document).ready(function() {
     "Domingo": 0
   };
 
+  // Cerrar modal al inicio, si está abierto por alguna razón
+  $('#eventModal').hide();
+
   // Obtener horarios de apertura desde la base de datos
   $.ajax({
     url: 'fetch_horarios.php',
@@ -84,7 +87,7 @@ $(document).ready(function() {
         console.log('Evento clicado:', info.event);
         // Limpiar todos los campos del formulario al abrir el modal
         $('#eventForm')[0].reset();
-        $('#eventModal').css('display', 'block');
+        $('#eventModal').show();
         $('#cliente').val(info.event.extendedProps.cliente_id); // Establecer el cliente en el select
         $('#date').val(moment(info.event.start).format('YYYY-MM-DD'));
         $('#timeRange').val(moment(info.event.start).format('HH:mm') + ' - ' + moment(info.event.end).format('HH:mm'));
@@ -122,7 +125,7 @@ $(document).ready(function() {
         console.log('Seleccionar rango:', info);
         // Limpiar todos los campos del formulario al abrir el modal
         $('#eventForm')[0].reset();
-        $('#eventModal').css('display', 'block');
+        $('#eventModal').show();
 
         // Establecer la fecha y hora inicial y final
         $('#date').val(moment(info.start).format('YYYY-MM-DD'));
@@ -168,7 +171,7 @@ $(document).ready(function() {
 
   // Cerrar modal
   $('.close').on('click', function() {
-    $('#eventModal').css('display', 'none');
+    $('#eventModal').hide();
   });
 
   // Cargar servicios desde la base de datos
@@ -237,7 +240,7 @@ $(document).ready(function() {
 
   // Función para cerrar el modal y resetear el formulario
   function closeModal() {
-    $('#eventModal').css('display', 'none');
+    $('#eventModal').hide();
     $('#eventForm')[0].reset();
     $('#eventForm').removeData('eventId'); // Limpiar el ID del evento para futuros usos
   }
