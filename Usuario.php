@@ -63,4 +63,37 @@ class Usuario {
         $result = $stmt->get_result();
         return $result->fetch_assoc();
     }
+
+    // Almacena los tokens de Google para el usuario
+    public function almacenarGoogleTokens($userId, $accessToken, $refreshToken, $expiresIn) {
+        $expirationDate = date('Y-m-d H:i:s', time() + $expiresIn);
+        $stmt = $this->conn->prepare("
+            UPDATE usuarios 
+            SET google_access_token = ?, google_refresh_token = ?, google_token_expiration = ? 
+            WHERE id = ?");
+        $stmt->bind_param("sssi", $accessToken, $refreshToken, $expirationDate, $userId);
+        return $stmt->execute();
+    }
+
+    // Obtiene los tokens de Google por el ID del usuario
+    public function obtenerGoogleTokens($userId) {
+        $stmt = $this->conn->prepare("
+            SELECT google_access_token, google_refresh_token, google_token_expiration 
+            FROM usuarios 
+            WHERE id = ?");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
+    // Actualiza el access token y su expiración
+    public function actualizarGoogleAccessToken($userId, $accessToken, $expiresIn) {
+        $expirationDate = date('Y-m-d H:i:s', time() + $expiresIn);
+        $stmt = $this->conn->prepare("
+            UPDATE usuarios 
+            SET google_access_token = ?, google_token_expiration = ? 
+            WHERE id = ?");
+        $stmt->bind_param("ssi", $accessToken, $expirationDate, $userId);
+        return $stmt->execute();
+    }
 }
