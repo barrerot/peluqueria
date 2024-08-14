@@ -15,9 +15,9 @@ if (isset($_GET['token'])) {
 
     $usuario = new Usuario($conn);
     if ($usuario->activarUsuario($token)) {
-        $user_id = $usuario->obtenerUsuarioPorToken($token);
-        if ($user_id !== null) {
-            $_SESSION['user_id'] = $user_id;
+        $user_data = $usuario->obtenerUsuarioPorToken($token); // Devuelve un array con 'id'
+        if ($user_data !== null) {
+            $_SESSION['user_id'] = $user_data['id']; // Accede directamente al 'id'
             $_SESSION['success'] = 'Cuenta activada exitosamente. Por favor, completa tu información.';
             header("Location: " . $_ENV['APP_URL'] . "/configuracion-informacion.html");
         } else {
@@ -29,4 +29,5 @@ if (isset($_GET['token'])) {
         header("Location: " . $_ENV['APP_URL'] . "/registro-form.php");
     }
 }
+
 ?>
