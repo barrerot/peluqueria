@@ -1,10 +1,29 @@
 <?php
+session_start();
 require_once 'Cliente.php';
 
 use App\Cliente;
 
+if (!isset($_SESSION['user_id'])) {
+    die('Error: No se ha encontrado el ID del usuario en la sesión.');
+}
+
+$user_id = $_SESSION['user_id'];
+
 $cliente = new Cliente();
-$clientes = $cliente->obtenerClientes();
+
+// Obtener el negocio_id del usuario logueado
+$negocios = $cliente->obtenerNegociosPorUsuario($user_id);
+
+if (empty($negocios)) {
+    die('Error: No se encontró un negocio asociado a este usuario.');
+}
+
+// Suponiendo que el usuario solo tiene un negocio, tomamos el primer resultado
+$negocio_id = $negocios[0]['id'];
+
+// Obtener los clientes asociados al negocio del usuario logueado
+$clientes = $cliente->obtenerClientes($negocio_id);
 ?>
 
 <!DOCTYPE html>

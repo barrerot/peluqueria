@@ -9,13 +9,19 @@ $cliente = new Cliente();
 $user_id = $_SESSION['user_id'];
 $negocios = $cliente->obtenerNegociosPorUsuario($user_id);
 
+if (empty($negocios)) {
+    die('Error: No se encontró un negocio asociado a este usuario.');
+}
+
+// Suponiendo que el usuario solo tiene un negocio, tomamos el primer resultado
+$negocio_id = $negocios[0]['id'];
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'] ?? null;
     $nombre = $_POST['nombre'];
     $telefono = $_POST['telefono'];
     $email = $_POST['email'];
     $cumpleanos = $_POST['cumpleanos'];
-    $negocio_id = $_POST['negocio_id'];
 
     if ($id) {
         // Editar cliente
@@ -86,16 +92,7 @@ $clienteData = $id ? $cliente->obtenerClientePorId($id) : null;
                         <label for="cumpleanos">Cumpleaños</label>
                         <input type="date" class="form-control" id="cumpleanos" name="cumpleanos" value="<?php echo $clienteData['cumpleanos'] ?? ''; ?>" required>
                     </div>
-                    <div class="form-group">
-                        <label for="negocio_id">Negocio</label>
-                        <select class="form-control" id="negocio_id" name="negocio_id" required>
-                            <?php foreach ($negocios as $negocio): ?>
-                                <option value="<?php echo $negocio['id']; ?>" <?php echo (isset($clienteData['negocio_id']) && $clienteData['negocio_id'] == $negocio['id']) ? 'selected' : ''; ?>>
-                                    <?php echo $negocio['nombre']; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
+                    <!-- Eliminamos el campo de selección de negocio -->
                     <button type="submit" class="btn btn-primary"><?php echo $id ? 'Actualizar' : 'Guardar'; ?></button>
                 </form>
             </main>

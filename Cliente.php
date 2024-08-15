@@ -11,9 +11,19 @@ class Cliente {
         $this->conn = $db->getConnection();
     }
 
-    public function obtenerClientes() {
-        $query = "SELECT * FROM clientes";
-        $result = $this->conn->query($query);
+    // Método obtenerClientes ahora acepta un parámetro opcional negocio_id
+    public function obtenerClientes($negocio_id = null) {
+        if ($negocio_id) {
+            $query = "SELECT * FROM clientes WHERE negocio_id = ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bind_param("i", $negocio_id);
+        } else {
+            $query = "SELECT * FROM clientes";
+            $stmt = $this->conn->prepare($query);
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
         $clientes = [];
         while ($row = $result->fetch_assoc()) {
             $clientes[] = $row;
@@ -64,4 +74,5 @@ class Cliente {
         return $negocios;
     }
 }
+
 ?>
