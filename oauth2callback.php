@@ -1,8 +1,15 @@
 <?php
 session_start();
+
+// Cargar el autoloader de Composer
+require_once __DIR__ . '/vendor/autoload.php';
+
+// Cargar las variables de entorno desde el archivo .env
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 require_once 'db.php';  // Incluir el archivo que contiene la clase DB
 require_once 'config.php';  // Incluir la configuración de Google API y la base de datos
-
 require_once 'Usuario.php';  // Incluir el archivo que contiene la clase Usuario
 
 // Crear una instancia de la clase DB y obtener la conexión
