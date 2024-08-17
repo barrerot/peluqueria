@@ -1,3 +1,11 @@
+<?php
+// Inicia la sesión si aún no se ha iniciado
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../acceso-usuario.html");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -114,27 +122,8 @@
 
   <div class="container-fluid">
     <div class="row">
-      <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-        <div class="sidebar-sticky">
-          <ul class="nav flex-column">
-            <li class="nav-item">
-              <a class="nav-link" href="#">Agenda</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="../listado-clientes.php">Clientes</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="../mensajes.php">Mensajes</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="../estadisticas.php">Analíticas</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="../listado-servicios.php">Servicios</a>
-            </li>
-          </ul>
-        </div>
-      </nav>
+      <!-- Incluir el menú lateral -->
+      <?php include '../menu_lateral.php'; ?>
 
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
         <div id='calendar'></div>

@@ -38,27 +38,8 @@ $clientes = $cliente->obtenerClientes($negocio_id);
 <body>
     <div class="container-fluid">
         <div class="row">
-            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-                <div class="sidebar-sticky">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="./peluqueria/">Agenda</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="listado-clientes.php">Clientes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="mensajes.php">Mensajes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="estadisticas.php">Analíticas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="listado-servicios.php">Servicios</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+           <!-- Incluir el menú lateral -->
+           <?php include 'menu_lateral.php'; ?>
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
                 <h2>Listado de Clientes</h2>
                 <a href="nuevo-cliente.php" class="btn btn-primary mb-3">Añadir Cliente</a>

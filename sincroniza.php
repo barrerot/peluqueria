@@ -46,6 +46,10 @@ if (new DateTime() >= new DateTime($tokens['google_token_expiration'])) {
     $usuario->actualizarGoogleAccessToken($userId, $accessToken, $response['expires_in']);
 }
 
+// Inicializar arrays para almacenar los eventos sincronizados
+$eventosInsertadosDesdeGoogle = [];
+$eventosInsertadosEnGoogle = [];
+
 // Sincronización desde Google Calendar a la aplicación
 $calendarUrl = 'https://www.googleapis.com/calendar/v3/calendars/primary/events?access_token=' . $accessToken;
 $response = file_get_contents($calendarUrl);
@@ -56,7 +60,7 @@ if (!isset($events['items'])) {
 }
 
 foreach ($events['items'] as $event) {
-    $title = $event['summary'];
+    $title = $event['summary'] ?? 'Sin título';
     $start = new DateTime($event['start']['dateTime'] ?? $event['start']['date']);
     $end = new DateTime($event['end']['dateTime'] ?? $event['end']['date']);
 
@@ -79,7 +83,14 @@ foreach ($events['items'] as $event) {
         $stmt->bind_param('sssi', $title, $startFormatted, $endFormatted, $clienteId);
 
         // Ejecutar la consulta
-        if (!$stmt->execute()) {
+        if ($stmt->execute()) {
+            // Agregar el evento insertado al resumen
+            $eventosInsertadosDesdeGoogle[] = [
+                'title' => $title,
+                'start' => $startFormatted,
+                'end'   => $endFormatted,
+            ];
+        } else {
             echo "Error al insertar la cita: " . $stmt->error;
         }
     }
@@ -114,10 +125,31 @@ while ($cita = $citas->fetch_assoc()) {
     $context  = stream_context_create($options);
     $result = file_get_contents($calendarUrl, false, $context);
 
-    if ($result === FALSE) {
-        die('Error al sincronizar eventos con Google Calendar.');
+    if ($result !== FALSE) {
+        // Agregar el evento insertado al resumen
+        $eventosInsertadosEnGoogle[] = [
+            'title' => $cita['title'],
+            'start' => $cita['start'],
+            'end'   => $cita['end'],
+        ];
+    } else {
+        echo 'Error al sincronizar eventos con Google Calendar.';
     }
 }
 
-echo "Sincronización bidireccional completada.";
+// Mostrar resumen de sincronización
+echo "Sincronización bidireccional completada.\n\n";
+
+// Mostrar eventos insertados desde Google Calendar
+echo "Eventos sincronizados desde Google Calendar a la aplicación:\n";
+foreach ($eventosInsertadosDesdeGoogle as $evento) {
+    echo "- Título: {$evento['title']}, Inicio: {$evento['start']}, Fin: {$evento['end']}\n";
+}
+
+// Mostrar eventos insertados en Google Calendar
+echo "\nEventos sincronizados desde la aplicación a Google Calendar:\n";
+foreach ($eventosInsertadosEnGoogle as $evento) {
+    echo "- Título: {$evento['title']}, Inicio: {$evento['start']}, Fin: {$evento['end']}\n";
+}
+
 ?>

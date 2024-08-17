@@ -15,14 +15,16 @@ class Mensaje {
     }
 
     public function save() {
-        $stmt = $this->conn->prepare("INSERT INTO Mensaje (negocio_id, remitente_id, destinatario_id, contenido, fecha_envio, estado) VALUES (?, ?, ?, ?, ?, ?)");
+        // Asegurarse de que estamos usando la tabla 'mensajes'
+        $stmt = $this->conn->prepare("INSERT INTO mensajes (negocio_id, remitente_id, destinatario_id, contenido, fecha_envio, estado) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("iiisss", $this->negocio_id, $this->remitente_id, $this->destinatario_id, $this->contenido, $this->fecha_envio, $this->estado);
         $stmt->execute();
         $stmt->close();
     }
 
     public static function getAll($conn) {
-        $result = $conn->query("SELECT * FROM Mensaje");
+        // Asegurarse de que estamos usando la tabla 'mensajes'
+        $result = $conn->query("SELECT * FROM mensajes");
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 }
