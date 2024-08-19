@@ -1,35 +1,42 @@
 <?php
-// Definir la ruta base del proyecto
-$base_url = '/peluqueria';
-
-// Verificar si la variable $num_mensajes_no_leidos está definida, si no, se inicializa a 0
-if (!isset($num_mensajes_no_leidos)) {
-    // Incluir el archivo de conexión a la base de datos si no ha sido incluido previamente
-    if (!class_exists('DB')) {
-        include 'db.php';
-    }
-
-    $db = new DB();
-    $conn = $db->getConnection();
-    $user_id = $_SESSION['user_id'];
-
-    // Consulta para contar los mensajes no leídos o pendientes
-    $stmt = $conn->prepare("SELECT COUNT(*) as count FROM mensajes 
-                            WHERE destinatario_id = ? AND (estado = 'No leído' OR estado = 'Pendiente')");
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
-    $num_mensajes_no_leidos = $row['count'];
-    $stmt->close();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
 }
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: /peluqueria/acceso-usuario.html");
+    exit();
+}
+
+$user_id = $_SESSION['user_id'];
+
+// Incluir el archivo de conexión a la base de datos si no ha sido incluido previamente
+if (!class_exists('DB')) {
+    include $_SERVER['DOCUMENT_ROOT'] . '/peluqueria/db.php';
+}
+
+$db = new DB();
+$conn = $db->getConnection();
+
+// Consulta para contar los mensajes no leídos o pendientes
+$stmt = $conn->prepare("SELECT COUNT(*) as count FROM mensajes 
+                        WHERE destinatario_id = ? AND (estado = 'No leído' OR estado = 'Pendiente')");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+$num_mensajes_no_leidos = $row['count'];
+$stmt->close();
+
+// Definir la URL base de la aplicación
+$base_url = '/peluqueria';
 ?>
 
 <nav class="col-md-2 d-none d-md-block bg-light sidebar">
     <div class="sidebar-sticky">
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link" href="<?= $base_url ?>/peluqueria/index.php">Agenda</a>
+                <a class="nav-link active" href="<?= $base_url ?>/peluqueria/index.php">Agenda</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="<?= $base_url ?>/listado-clientes.php">Clientes</a>

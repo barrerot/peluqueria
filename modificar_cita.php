@@ -58,7 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_modificacion']
     $mensaje->destinatario_id = $_POST['usuario_id']; // ID del propietario del negocio
     $mensaje->contenido = $_POST['mensaje_modificacion'];
     $mensaje->fecha_envio = date('Y-m-d H:i:s');
-    $mensaje->estado = 'Enviado';
+    $mensaje->estado = 'No Leído';
+    $mensaje->cita_id = $_POST['cita_id']; // Asignar correctamente el cita_id
 
     $mensaje->save();
 

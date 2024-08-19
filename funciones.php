@@ -33,7 +33,6 @@ function obtenerServiciosPorCita($conn, $cita_id) {
 }
 
 function obtenerUsuarioIdPorNegocio($conn, $negocio_id) {
-    // Consultar la tabla negocios para obtener el user_id asociado al negocio
     $stmt = $conn->prepare("SELECT user_id FROM negocios WHERE id = ? LIMIT 1");
     $stmt->bind_param("i", $negocio_id);
     $stmt->execute();

@@ -5,34 +5,203 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Incluir el archivo de conexión a la base de datos
+// Cargar el autoloader de Composer
+require_once __DIR__ . '/vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 include 'db.php';
+include 'Mensaje.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+// Función para enviar el correo de respuesta
+function enviarCorreoRespuesta($clienteEmail, $clienteNombre, $citaDetalles, $mensajeCliente, $respuestaNegocio) {
+    $mail = new PHPMailer(true);
+    
+    try {
+        $mail->isSMTP();
+        $mail->Host = $_ENV['SMTP_HOST'];
+        $mail->SMTPAuth = true;
+        $mail->Username = $_ENV['SMTP_USERNAME'];
+        $mail->Password = $_ENV['SMTP_PASSWORD'];
+        $mail->SMTPSecure = $_ENV['SMTP_ENCRYPTION'];
+        $mail->Port = $_ENV['SMTP_PORT'];
+
+        $mail->setFrom($_ENV['SMTP_USERNAME'], 'Tu Negocio');
+        $mail->addAddress($clienteEmail);
+
+        // Adjuntar la imagen del banner y referenciarla en el HTML con cid
+        $mail->addEmbeddedImage(__DIR__ . '/images/banner.png', 'banner_cid');
+
+        $mail->isHTML(true);
+        $mail->Subject = 'Respuesta a tu mensaje sobre tu cita';
+
+        $htmlContent = "
+        <html>
+        <head>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    color: #333;
+                    line-height: 1.6;
+                }
+                .container {
+                    width: 90%;
+                    margin: 0 auto;
+                    padding: 20px;
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    background-color: #f9f9f9;
+                }
+                .header {
+                    text-align: center;
+                    border-radius: 5px 5px 0 0;
+                }
+                .header img {
+                    width: 100%;
+                    height: auto;
+                    display: block;
+                    margin: 0 auto;
+                }
+                .content {
+                    padding: 20px;
+                }
+                .footer {
+                    text-align: center;
+                    padding: 10px;
+                    font-size: 12px;
+                    color: #777;
+                }
+                .footer a {
+                    color: #4CAF50;
+                    text-decoration: none;
+                }
+                .section-title {
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                    color: #4CAF50;
+                }
+                .section-content {
+                    margin-bottom: 20px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <img src='cid:banner_cid' alt='Banner'>
+                </div>
+                <div class='content'>
+                    <p>Hola <strong>{$clienteNombre}</strong>,</p>
+                    <p>Gracias por ponerte en contacto con nosotros. A continuación, te ofrecemos un resumen de la comunicación relacionada con tu cita.</p>
+                    
+                    <div class='section'>
+                        <div class='section-title'>Detalles de la Cita</div>
+                        <div class='section-content'>
+                            <p><strong>Fecha y Hora:</strong> {$citaDetalles['fecha']} de {$citaDetalles['hora_inicio']} a {$citaDetalles['hora_fin']}</p>
+                            <p><strong>Servicio(s):</strong> {$citaDetalles['servicios']}</p>
+                        </div>
+                    </div>
+
+                    <div class='section'>
+                        <div class='section-title'>Tu Mensaje</div>
+                        <div class='section-content'>
+                            <p>{$mensajeCliente}</p>
+                        </div>
+                    </div>
+
+                    <div class='section'>
+                        <div class='section-title'>Nuestra Respuesta</div>
+                        <div class='section-content'>
+                            <p>{$respuestaNegocio}</p>
+                        </div>
+                    </div>
+
+                    <p>Si tienes alguna otra consulta o necesitas realizar algún cambio en tu cita, no dudes en ponerte en contacto con nosotros.</p>
+                    <p>¡Esperamos verte pronto!</p>
+                </div>
+                <div class='footer'>
+                    <p>&copy; " . date('Y') . " Tu Negocio | <a href='https://tusitio.com'>Visita nuestro sitio web</a></p>
+                    <p><a href='mailto:soporte@tusitio.com'>soporte@tusitio.com</a> | Tel: 123-456-7890</p>
+                </div>
+            </div>
+        </body>
+        </html>";
+
+        $mail->Body = $htmlContent;
+
+        if ($mail->send()) {
+            error_log("Correo enviado a $clienteEmail");
+        } else {
+            error_log("Mailer Error: " . $mail->ErrorInfo);
+        }
+    } catch (Exception $e) {
+        error_log("Error al enviar el correo: {$mail->ErrorInfo}");
+    }
+}
 
 $db = new DB();
 $conn = $db->getConnection();
 
-// Obtener los mensajes de la base de datos
+// Obtener el ID del usuario actual
 $user_id = $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT mensajes.id, mensajes.contenido, mensajes.fecha_envio, mensajes.estado, clientes.nombre AS cliente_nombre FROM mensajes 
-                        JOIN clientes ON mensajes.remitente_id = clientes.id 
-                        WHERE mensajes.destinatario_id = ?");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$mensajes = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-$stmt->close();
 
-// Actualizar el estado del mensaje si se envía el formulario
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mensaje_id']) && isset($_POST['nuevo_estado'])) {
-    $mensaje_id = $_POST['mensaje_id'];
-    $nuevo_estado = $_POST['nuevo_estado'];
+// Obtener los mensajes utilizando la clase Mensaje
+$mensajes = Mensaje::getByUserId($conn, $user_id);
 
-    $stmt = $conn->prepare("UPDATE mensajes SET estado = ? WHERE id = ?");
-    $stmt->bind_param("si", $nuevo_estado, $mensaje_id);
-    $stmt->execute();
-    $stmt->close();
+// Crear un array para agrupar los mensajes por cliente
+$mensajesAgrupados = [];
+foreach ($mensajes as $mensaje) {
+    $clienteId = ($mensaje['remitente_id'] == $user_id) ? $mensaje['destinatario_id'] : $mensaje['remitente_id'];
+    
+    // Obtener el nombre del cliente
+    $clienteNombre = Mensaje::getClientName($conn, $clienteId);
+    
+    if (!isset($mensajesAgrupados[$clienteId])) {
+        $mensajesAgrupados[$clienteId] = [
+            'nombre' => $clienteNombre,
+            'mensajes' => []
+        ];
+    }
+    $mensajesAgrupados[$clienteId]['mensajes'][] = $mensaje;
+}
 
-    // Redirigir para evitar reenvío de formularios
-    header("Location: mensajes.php");
+// Obtener el ID del cliente seleccionado
+$clienteSeleccionadoId = null;
+if (!empty($mensajesAgrupados)) {
+    $clienteSeleccionadoId = isset($_GET['cliente_id']) ? $_GET['cliente_id'] : array_key_first($mensajesAgrupados);
+}
+
+// Procesar la actualización del estado o el envío de una respuesta
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['respuesta_contenido'])) {
+    $respuesta_contenido = $_POST['respuesta_contenido'];
+    $destinatario_id = $clienteSeleccionadoId;
+
+    // Obtener el ID de la cita correspondiente al mensaje (suponiendo que la respuesta se asocia con la cita del último mensaje recibido)
+    $cita_id = Mensaje::getCitaIdByMensajeId($conn, end($mensajesAgrupados[$clienteSeleccionadoId]['mensajes'])['id']);
+
+    $nuevo_mensaje = new Mensaje($conn);
+    $nuevo_mensaje->negocio_id = 1;
+    $nuevo_mensaje->remitente_id = $user_id;
+    $nuevo_mensaje->destinatario_id = $destinatario_id;
+    $nuevo_mensaje->contenido = $respuesta_contenido;
+    $nuevo_mensaje->fecha_envio = date('Y-m-d H:i:s');
+    $nuevo_mensaje->estado = 'No Leído';
+    $nuevo_mensaje->cita_id = $cita_id;
+
+    $nuevo_mensaje->save();
+
+    $clienteNombre = Mensaje::getClientName($conn, $destinatario_id);
+    $clienteEmail = Mensaje::getClientEmail($conn, $destinatario_id);
+    $mensajeCliente = $mensaje['contenido'];
+    $citaDetalles = Mensaje::getCitaDetalles($conn, $cita_id);
+
+    enviarCorreoRespuesta($clienteEmail, $clienteNombre, $citaDetalles, $mensajeCliente, $respuesta_contenido);
+
+    header("Location: mensajes.php?cliente_id=" . $clienteSeleccionadoId);
     exit();
 }
 ?>
@@ -44,64 +213,121 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mensaje_id']) && isse
     <title>Mensajes</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .sidebar {
+            background-color: #f8f9fa;
+            height: 100vh;
+        }
+
+        .message-list {
+            background-color: #fff;
+            border-right: 1px solid #dee2e6;
+            height: 100vh;
+            overflow-y: scroll;
+        }
+
+        .message-detail {
+            background-color: #f1f3f5;
+            height: 100vh;
+            overflow-y: scroll;
+        }
+
+        .message-item {
+            cursor: pointer;
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .message-item.active {
+            background-color: #e9ecef;
+        }
+
+        .message-item:hover {
+            background-color: #e2e6ea;
+        }
+
+        .message-content {
+            padding: 20px;
+        }
+
+        .message-reply {
+            background-color: #fff;
+            padding: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .message-sent {
+            text-align: right;
+            margin-left: auto;
+        }
+
+        .message-received {
+            text-align: left;
+            margin-right: auto;
+        }
+    </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
-            <!-- Incluir el menú lateral -->
-            <?php include 'menu_lateral.php'; ?>
-
-            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                <h2>Mensajes</h2>
-                <div class="row">
-                    <div class="col-md-4">
-                        <ul class="list-group">
-                            <?php foreach ($mensajes as $mensaje): ?>
-                                <li class="list-group-item">
-                                    <?= htmlspecialchars($mensaje['cliente_nombre']) ?>
-                                    <span class="badge badge-secondary"><?= htmlspecialchars($mensaje['estado']) ?></span>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                    <div class="col-md-8">
-                        <?php if (!empty($mensajes)): ?>
-                            <?php foreach ($mensajes as $mensaje): ?>
-                                <div class="card mb-4">
-                                    <div class="card-body">
-                                        <h5 class="card-title"><?= htmlspecialchars($mensaje['cliente_nombre']) ?></h5>
-                                        <p class="card-text"><?= htmlspecialchars($mensaje['contenido']) ?></p>
-                                        <p><small><?= date('d/m/Y H:i', strtotime($mensaje['fecha_envio'])) ?></small></p>
-                                        <form method="POST" action="">
-                                            <input type="hidden" name="mensaje_id" value="<?= $mensaje['id'] ?>">
-                                            <div class="form-group">
-                                                <label for="nuevo_estado">Cambiar estado:</label>
-                                                <select name="nuevo_estado" id="nuevo_estado" class="form-control">
-                                                    <option value="No leído" <?= $mensaje['estado'] == 'No leído' ? 'selected' : '' ?>>No leído</option>
-                                                    <option value="Pendiente" <?= $mensaje['estado'] == 'Pendiente' ? 'selected' : '' ?>>Pendiente</option>
-                                                    <option value="Leído" <?= $mensaje['estado'] == 'Leído' ? 'selected' : '' ?>>Leído</option>
-                                                    <option value="En Proceso" <?= $mensaje['estado'] == 'En Proceso' ? 'selected' : '' ?>>En Proceso</option>
-                                                    <option value="Modificación Aceptada" <?= $mensaje['estado'] == 'Modificación Aceptada' ? 'selected' : '' ?>>Modificación Aceptada</option>
-                                                    <option value="Modificación Rechazada" <?= $mensaje['estado'] == 'Modificación Rechazada' ? 'selected' : '' ?>>Modificación Rechazada</option>
-                                                    <option value="Cerrado" <?= $mensaje['estado'] == 'Cerrado' ? 'selected' : '' ?>>Cerrado</option>
-                                                </select>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">Actualizar Estado</button>
-                                        </form>
+            <div class="col-md-2">
+                <?php include 'menu_lateral.php'; ?>
+            </div>
+            <div class="col-md-3 message-list">
+                <ul class="list-group">
+                    <?php 
+                    if (empty($mensajesAgrupados)) {
+                        echo "<li class='list-group-item'>No hay mensajes para mostrar.</li>";
+                    } else {
+                        foreach ($mensajesAgrupados as $clienteId => $clienteData): 
+                    ?>
+                            <li class="message-item <?= $clienteId == $clienteSeleccionadoId ? 'active' : '' ?>">
+                                <a href="mensajes.php?cliente_id=<?= $clienteId ?>">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <strong><?= htmlspecialchars($clienteData['nombre']) ?></strong>
+                                        </div>
                                     </div>
+                                </a>
+                            </li>
+                        <?php endforeach; 
+                    }
+                    ?>
+                </ul>
+            </div>
+            <div class="col-md-7 message-detail">
+                <div class="message-content">
+                    <?php if ($clienteSeleccionadoId !== null && !empty($mensajesAgrupados[$clienteSeleccionadoId]['mensajes'])): ?>
+                        <h5 class="card-title"><?= htmlspecialchars($mensajesAgrupados[$clienteSeleccionadoId]['nombre']) ?></h5>
+                        <?php foreach ($mensajesAgrupados[$clienteSeleccionadoId]['mensajes'] as $mensaje): ?>
+                            <?php if ($mensaje['remitente_id'] == $user_id): ?>
+                                <div class="message-sent">
+                                    <p><strong><?= htmlspecialchars($mensaje['contenido']) ?></strong></p>
+                                    <p><small><?= date('d/m/Y H:i', strtotime($mensaje['fecha_envio'])) ?></small></p>
                                 </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <p>No hay mensajes para mostrar.</p>
-                        <?php endif; ?>
-                    </div>
+                            <?php else: ?>
+                                <div class="message-received">
+                                    <p><strong><?= htmlspecialchars($mensaje['contenido']) ?></strong></p>
+                                    <p><small><?= date('d/m/Y H:i', strtotime($mensaje['fecha_envio'])) ?></small></p>
+                                </div>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <p>No hay mensajes para mostrar.</p>
+                    <?php endif; ?>
                 </div>
-            </main>
+                <div class="message-reply">
+                    <?php if ($clienteSeleccionadoId !== null): ?>
+                    <form method="POST" action="">
+                        <div class="form-group">
+                            <textarea name="respuesta_contenido" id="respuesta_contenido" class="form-control" rows="3" placeholder="Escribe tu respuesta..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary float-right">Enviar</button>
+                    </form>
+                    <?php endif; ?>
+                </div>
+            </div>
         </div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.amazonaws.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
