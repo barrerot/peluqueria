@@ -16,34 +16,11 @@ if (!isset($_SESSION['user_id'])) {
 $usuario = new Usuario($conn);
 $userId = $_SESSION['user_id'];
 
-// Obtener los tokens de Google para el usuario
-$tokens = $usuario->obtenerGoogleTokens($userId);
+// Obtener y refrescar el token de acceso si es necesario
+$accessToken = obtenerTokenDeAcceso($usuario, $userId);
 
-if (!$tokens || !$tokens['google_access_token']) {
-    die('Error: No se encontraron tokens de Google para este usuario.');
-}
-
-// Verificar si el token ha expirado y refrescarlo si es necesario
-$accessToken = $tokens['google_access_token'];
-if (new DateTime() >= new DateTime($tokens['google_token_expiration'])) {
-    // Refrescar el token
-    $refreshToken = $tokens['google_refresh_token'];
-    $response = file_get_contents('https://oauth2.googleapis.com/token', false, stream_context_create([
-        'http' => [
-            'method'  => 'POST',
-            'header'  => 'Content-type: application/x-www-form-urlencoded',
-            'content' => http_build_query([
-                'client_id'     => CLIENT_ID,
-                'client_secret' => CLIENT_SECRET,
-                'refresh_token' => $refreshToken,
-                'grant_type'    => 'refresh_token',
-            ]),
-        ],
-    ]));
-
-    $response = json_decode($response, true);
-    $accessToken = $response['access_token'];
-    $usuario->actualizarGoogleAccessToken($userId, $accessToken, $response['expires_in']);
+if (!$accessToken) {
+    die('Error: No se pudo obtener un token de acceso válido.');
 }
 
 // Inicializar arrays para almacenar los eventos sincronizados
@@ -94,6 +71,7 @@ foreach ($events['items'] as $event) {
             echo "Error al insertar la cita: " . $stmt->error;
         }
     }
+    $stmt->close();
 }
 
 // Sincronización desde la aplicación a Google Calendar
@@ -114,26 +92,46 @@ while ($cita = $citas->fetch_assoc()) {
         ],
     ];
 
+    // Verificar si ya existe un evento con el mismo título y horario en Google Calendar
     $calendarUrl = 'https://www.googleapis.com/calendar/v3/calendars/primary/events?access_token=' . $accessToken;
-    $options = [
-        'http' => [
-            'header' => "Content-type: application/json\r\n",
-            'method'  => 'POST',
-            'content' => json_encode($event),
-        ],
-    ];
-    $context  = stream_context_create($options);
-    $result = file_get_contents($calendarUrl, false, $context);
+    $existingEventsResponse = file_get_contents($calendarUrl);
+    $existingEvents = json_decode($existingEventsResponse, true);
 
-    if ($result !== FALSE) {
-        // Agregar el evento insertado al resumen
-        $eventosInsertadosEnGoogle[] = [
-            'title' => $cita['title'],
-            'start' => $cita['start'],
-            'end'   => $cita['end'],
+    $eventExists = false;
+    if (isset($existingEvents['items'])) {
+        foreach ($existingEvents['items'] as $existingEvent) {
+            if (
+                $existingEvent['summary'] === $cita['title'] &&
+                (new DateTime($existingEvent['start']['dateTime'] ?? $existingEvent['start']['date']))->format('Y-m-d H:i:s') === $cita['start'] &&
+                (new DateTime($existingEvent['end']['dateTime'] ?? $existingEvent['end']['date']))->format('Y-m-d H:i:s') === $cita['end']
+            ) {
+                $eventExists = true;
+                break;
+            }
+        }
+    }
+
+    if (!$eventExists) {
+        $options = [
+            'http' => [
+                'header' => "Content-type: application/json\r\n",
+                'method'  => 'POST',
+                'content' => json_encode($event),
+            ],
         ];
-    } else {
-        echo 'Error al sincronizar eventos con Google Calendar.';
+        $context  = stream_context_create($options);
+        $result = file_get_contents($calendarUrl, false, $context);
+
+        if ($result !== FALSE) {
+            // Agregar el evento insertado al resumen
+            $eventosInsertadosEnGoogle[] = [
+                'title' => $cita['title'],
+                'start' => $cita['start'],
+                'end'   => $cita['end'],
+            ];
+        } else {
+            echo 'Error al sincronizar eventos con Google Calendar.';
+        }
     }
 }
 
@@ -150,6 +148,40 @@ foreach ($eventosInsertadosDesdeGoogle as $evento) {
 echo "\nEventos sincronizados desde la aplicación a Google Calendar:\n";
 foreach ($eventosInsertadosEnGoogle as $evento) {
     echo "- Título: {$evento['title']}, Inicio: {$evento['start']}, Fin: {$evento['end']}\n";
+}
+
+// Función para obtener y refrescar el token de acceso
+function obtenerTokenDeAcceso($usuario, $userId) {
+    $tokens = $usuario->obtenerGoogleTokens($userId);
+
+    if (!$tokens || !$tokens['google_access_token']) {
+        die('Error: No se encontraron tokens de Google para este usuario.');
+    }
+
+    $accessToken = $tokens['google_access_token'];
+
+    if (new DateTime() >= new DateTime($tokens['google_token_expiration'])) {
+        // Refrescar el token
+        $refreshToken = $tokens['google_refresh_token'];
+        $response = file_get_contents('https://oauth2.googleapis.com/token', false, stream_context_create([
+            'http' => [
+                'method'  => 'POST',
+                'header'  => 'Content-type: application/x-www-form-urlencoded',
+                'content' => http_build_query([
+                    'client_id'     => $_ENV['CLIENT_ID'],
+                    'client_secret' => $_ENV['CLIENT_SECRET'],
+                    'refresh_token' => $refreshToken,
+                    'grant_type'    => 'refresh_token',
+                ]),
+            ],
+        ]));
+
+        $response = json_decode($response, true);
+        $accessToken = $response['access_token'];
+        $usuario->actualizarGoogleAccessToken($userId, $accessToken, $response['expires_in']);
+    }
+
+    return $accessToken;
 }
 
 ?>

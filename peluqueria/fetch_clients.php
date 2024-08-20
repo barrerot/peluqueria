@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// Primero obtenemos el ID del negocio asociado al usuario logueado
+// Obtener el ID del negocio asociado al usuario logueado
 $sql_negocio = "SELECT id FROM negocios WHERE user_id = ?";
 $stmt_negocio = $conn->prepare($sql_negocio);
 if (!$stmt_negocio) {
@@ -29,29 +29,62 @@ if (!$negocio) {
 
 $negocio_id = $negocio['id'];
 
-// Ahora que tenemos el negocio_id, lo usamos para buscar los clientes
-$sql_clientes = "SELECT id, nombre FROM clientes WHERE negocio_id = ?";
-$stmt_clientes = $conn->prepare($sql_clientes);
-if (!$stmt_clientes) {
+// Obtener eventos asociados al negocio, incluyendo eventos personales y de clientes
+$sql_eventos = "
+    SELECT 
+        citas.id, 
+        citas.title, 
+        citas.start, 
+        citas.end, 
+        citas.clienteId,
+        IFNULL(clientes.nombre, 'Evento Personal') AS cliente_nombre,
+        citas.clienteId = -1 AS personal
+    FROM citas
+    LEFT JOIN clientes ON citas.clienteId = clientes.id
+    WHERE citas.clienteId = -1 OR clientes.negocio_id = ?";
+
+$stmt_eventos = $conn->prepare($sql_eventos);
+if (!$stmt_eventos) {
     die('Prepare failed: ' . $conn->error);
 }
 
-$stmt_clientes->bind_param("i", $negocio_id);
-if (!$stmt_clientes->execute()) {
-    die('Execute failed: ' . $stmt_clientes->error);
+$stmt_eventos->bind_param("i", $negocio_id);
+if (!$stmt_eventos->execute()) {
+    die('Execute failed: ' . $stmt_eventos->error);
 }
 
-$result_clientes = $stmt_clientes->get_result();
-$clientes = [];
+$result_eventos = $stmt_eventos->get_result();
+$eventos = [];
 
-while ($row = $result_clientes->fetch_assoc()) {
-    $clientes[] = $row;
+while ($row = $result_eventos->fetch_assoc()) {
+    // Agregar depuración para cada evento
+    error_log("Evento recuperado: ID=" . $row['id'] . ", Title=" . $row['title']);
+
+    $evento = [
+        'id' => $row['id'],
+        'title' => $row['title'],
+        'start' => $row['start'],
+        'end' => $row['end'],
+        'extendedProps' => [
+            'cliente_id' => $row['clienteId'],
+            'cliente_nombre' => $row['cliente_nombre'],
+            'personal' => (bool) $row['personal']
+        ]
+    ];
+    $eventos[] = $evento;
+}
+
+// Verificar los eventos recuperados
+if (empty($eventos)) {
+    error_log('No se encontraron eventos en la consulta.');
+} else {
+    error_log('Eventos recuperados: ' . json_encode($eventos));
 }
 
 header('Content-Type: application/json');
-echo json_encode($clientes);
+echo json_encode($eventos);
 
-$stmt_clientes->close();
+$stmt_eventos->close();
 $stmt_negocio->close();
 $conn->close();
 ?>
