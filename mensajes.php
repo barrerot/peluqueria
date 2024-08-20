@@ -150,6 +150,9 @@ function enviarCorreoConOAuth($clienteEmail, $clienteNombre, $citaDetalles, $men
 
         $mail->Body = $htmlContent;
 
+        // Log para verificar el nombre del negocio
+        error_log("Nombre del negocio usado: " . $nombreNegocio);
+
         if ($mail->send()) {
             error_log("Correo enviado a $clienteEmail");
         } else {
@@ -208,15 +211,15 @@ foreach ($mensajes as $mensaje) {
     $mensajesAgrupados[$clienteId]['mensajes'][] = $mensaje;
 }
 
-// Obtener el ID del cliente seleccionado
+// Inicializar la variable para evitar warnings
 $clienteSeleccionadoId = null;
+
+// Obtener el ID del cliente seleccionado
 if (!empty($mensajesAgrupados)) {
     $clienteSeleccionadoId = isset($_GET['cliente_id']) ? $_GET['cliente_id'] : array_key_first($mensajesAgrupados);
-}
 
-// Marcar mensajes como "Leído"
-if ($clienteSeleccionadoId !== null) {
-    $stmt = $conn->prepare("UPDATE mensajes SET estado = 'Leído' WHERE destinatario_id = ? AND remitente_id = ?");
+    // Marcar los mensajes del cliente como "Leído" cuando se seleccionan
+    $stmt = $conn->prepare("UPDATE Mensajes SET estado = 'Leído' WHERE destinatario_id = ? AND remitente_id = ? AND estado = 'No Leído'");
     $stmt->bind_param("ii", $user_id, $clienteSeleccionadoId);
     $stmt->execute();
     $stmt->close();
@@ -236,7 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['respuesta_contenido']
     $nuevo_mensaje->destinatario_id = $destinatario_id;
     $nuevo_mensaje->contenido = $respuesta_contenido;
     $nuevo_mensaje->fecha_envio = date('Y-m-d H:i:s');
-    $nuevo_mensaje->estado = 'No Leído';
+    $nuevo_mensaje->estado = 'Leído';  // Se marca automáticamente como "Leído"
     $nuevo_mensaje->cita_id = $cita_id;
 
     $nuevo_mensaje->save();
@@ -306,11 +309,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['respuesta_contenido']
         .message-sent {
             text-align: right;
             margin-left: auto;
+            background-color: #d4edda;
+            border-radius: 15px;
+            padding: 10px;
+            position: relative;
+            max-width: 60%;
+            clear: both;
+        }
+
+        .message-sent::before {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: 10px;
+            border-top: 10px solid transparent;
+            border-left: 10px solid #d4edda;
+            border-bottom: 10px solid transparent;
         }
 
         .message-received {
             text-align: left;
             margin-right: auto;
+            background-color: #f8d7da;
+            border-radius: 15px;
+            padding: 10px;
+            position: relative;
+            max-width: 60%;
+            clear: both;
+        }
+
+        .message-received::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 10px;
+            border-top: 10px solid transparent;
+            border-right: 10px solid #f8d7da;
+            border-bottom: 10px solid transparent;
         }
     </style>
 </head>
