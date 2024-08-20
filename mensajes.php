@@ -16,21 +16,38 @@ include 'Mensaje.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\OAuth;
+use League\OAuth2\Client\Provider\Google;
 
-// Función para enviar el correo de respuesta
-function enviarCorreoRespuesta($clienteEmail, $clienteNombre, $citaDetalles, $mensajeCliente, $respuestaNegocio) {
+// Función para enviar el correo de respuesta utilizando OAuth2
+function enviarCorreoConOAuth($clienteEmail, $clienteNombre, $citaDetalles, $mensajeCliente, $respuestaNegocio, $user, $nombreNegocio) {
     $mail = new PHPMailer(true);
     
     try {
+        // Configuración del servidor SMTP para OAuth2
         $mail->isSMTP();
-        $mail->Host = $_ENV['SMTP_HOST'];
+        $mail->Host = 'smtp.gmail.com';
+        $mail->Port = 587;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->SMTPAuth = true;
-        $mail->Username = $_ENV['SMTP_USERNAME'];
-        $mail->Password = $_ENV['SMTP_PASSWORD'];
-        $mail->SMTPSecure = $_ENV['SMTP_ENCRYPTION'];
-        $mail->Port = $_ENV['SMTP_PORT'];
+        $mail->AuthType = 'XOAUTH2';
 
-        $mail->setFrom($_ENV['SMTP_USERNAME'], 'Tu Negocio');
+        // Configuración de OAuth2
+        $provider = new Google([
+            'clientId' => $_ENV['CLIENT_ID'],
+            'clientSecret' => $_ENV['CLIENT_SECRET'],
+        ]);
+
+        $mail->setOAuth(new OAuth([
+            'provider' => $provider,
+            'clientId' => $_ENV['CLIENT_ID'],
+            'clientSecret' => $_ENV['CLIENT_SECRET'],
+            'refreshToken' => $user['google_refresh_token'],
+            'userName' => $user['email'],
+        ]));
+
+        // Configuración del correo
+        $mail->setFrom($user['email'], $nombreNegocio); // Aquí se usa el nombre del negocio
         $mail->addAddress($clienteEmail);
 
         // Adjuntar la imagen del banner y referenciarla en el HTML con cid
@@ -124,7 +141,7 @@ function enviarCorreoRespuesta($clienteEmail, $clienteNombre, $citaDetalles, $me
                     <p>¡Esperamos verte pronto!</p>
                 </div>
                 <div class='footer'>
-                    <p>&copy; " . date('Y') . " Tu Negocio | <a href='https://tusitio.com'>Visita nuestro sitio web</a></p>
+                    <p>&copy; " . date('Y') . " {$nombreNegocio} | <a href='https://tusitio.com'>Visita nuestro sitio web</a></p>
                     <p><a href='mailto:soporte@tusitio.com'>soporte@tusitio.com</a> | Tel: 123-456-7890</p>
                 </div>
             </div>
@@ -133,13 +150,11 @@ function enviarCorreoRespuesta($clienteEmail, $clienteNombre, $citaDetalles, $me
 
         $mail->Body = $htmlContent;
 
-        if ($mail->send()) {
-            error_log("Correo enviado a $clienteEmail");
-        } else {
-            error_log("Mailer Error: " . $mail->ErrorInfo);
+        if (!$mail->send()) {
+            throw new Exception('Error al enviar el correo: ' . $mail->ErrorInfo);
         }
     } catch (Exception $e) {
-        error_log("Error al enviar el correo: {$mail->ErrorInfo}");
+        error_log("Error al enviar el correo: {$e->getMessage()}");
     }
 }
 
@@ -148,6 +163,28 @@ $conn = $db->getConnection();
 
 // Obtener el ID del usuario actual
 $user_id = $_SESSION['user_id'];
+
+// Obtener los detalles del usuario de la base de datos
+$stmt = $conn->prepare("SELECT email, google_refresh_token FROM usuarios WHERE id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$stmt->bind_result($userEmail, $googleRefreshToken);
+$stmt->fetch();
+$stmt->close();
+
+// Obtener el nombre del negocio
+$stmt = $conn->prepare("SELECT nombre FROM negocios WHERE user_id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$stmt->bind_result($nombreNegocio);
+$stmt->fetch();
+$stmt->close();
+
+// Preparar los datos del usuario
+$user = [
+    'email' => $userEmail,
+    'google_refresh_token' => $googleRefreshToken
+];
 
 // Obtener los mensajes utilizando la clase Mensaje
 $mensajes = Mensaje::getByUserId($conn, $user_id);
@@ -199,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['respuesta_contenido']
     $mensajeCliente = $mensaje['contenido'];
     $citaDetalles = Mensaje::getCitaDetalles($conn, $cita_id);
 
-    enviarCorreoRespuesta($clienteEmail, $clienteNombre, $citaDetalles, $mensajeCliente, $respuesta_contenido);
+    enviarCorreoConOAuth($clienteEmail, $clienteNombre, $citaDetalles, $mensajeCliente, $respuesta_contenido, $user, $nombreNegocio);
 
     header("Location: mensajes.php?cliente_id=" . $clienteSeleccionadoId);
     exit();
