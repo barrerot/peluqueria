@@ -150,11 +150,13 @@ function enviarCorreoConOAuth($clienteEmail, $clienteNombre, $citaDetalles, $men
 
         $mail->Body = $htmlContent;
 
-        if (!$mail->send()) {
-            throw new Exception('Error al enviar el correo: ' . $mail->ErrorInfo);
+        if ($mail->send()) {
+            error_log("Correo enviado a $clienteEmail");
+        } else {
+            error_log("Mailer Error: " . $mail->ErrorInfo);
         }
     } catch (Exception $e) {
-        error_log("Error al enviar el correo: {$e->getMessage()}");
+        error_log("Error al enviar el correo: {$mail->ErrorInfo}");
     }
 }
 
@@ -210,6 +212,14 @@ foreach ($mensajes as $mensaje) {
 $clienteSeleccionadoId = null;
 if (!empty($mensajesAgrupados)) {
     $clienteSeleccionadoId = isset($_GET['cliente_id']) ? $_GET['cliente_id'] : array_key_first($mensajesAgrupados);
+}
+
+// Marcar mensajes como "Leído"
+if ($clienteSeleccionadoId !== null) {
+    $stmt = $conn->prepare("UPDATE mensajes SET estado = 'Leído' WHERE destinatario_id = ? AND remitente_id = ?");
+    $stmt->bind_param("ii", $user_id, $clienteSeleccionadoId);
+    $stmt->execute();
+    $stmt->close();
 }
 
 // Procesar la actualización del estado o el envío de una respuesta
