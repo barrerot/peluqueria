@@ -1,4 +1,10 @@
 <?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+// Cargar las variables de entorno desde el archivo .env
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 require_once 'db.php';
 require_once 'Usuario.php';
 
@@ -15,6 +21,11 @@ if (!isset($_SESSION['user_id'])) {
 
 $usuario = new Usuario($conn);
 $userId = $_SESSION['user_id'];
+
+// Verificar si las variables de entorno están definidas
+if (!isset($_ENV['CLIENT_ID']) || !isset($_ENV['CLIENT_SECRET'])) {
+    die('Error: CLIENT_ID o CLIENT_SECRET no están definidos en las variables de entorno.');
+}
 
 // Obtener y refrescar el token de acceso si es necesario
 $accessToken = obtenerTokenDeAcceso($usuario, $userId);
@@ -53,7 +64,7 @@ foreach ($events['items'] as $event) {
 
     if ($stmt->num_rows == 0) {
         // Asignar el valor fijo 2 a clienteId
-        $clienteId = 2;
+        $clienteId = -1;
 
         // Insertar el evento en la base de datos de la aplicación
         $stmt = $conn->prepare("INSERT INTO citas (title, start, end, clienteId) VALUES (?, ?, ?, ?)");
@@ -177,8 +188,17 @@ function obtenerTokenDeAcceso($usuario, $userId) {
         ]));
 
         $response = json_decode($response, true);
-        $accessToken = $response['access_token'];
-        $usuario->actualizarGoogleAccessToken($userId, $accessToken, $response['expires_in']);
+
+        if (isset($response['error'])) {
+            die('Error al refrescar el token de acceso de Google: ' . $response['error_description']);
+        }
+
+        if (isset($response['access_token'])) {
+            $accessToken = $response['access_token'];
+            $usuario->actualizarGoogleAccessToken($userId, $accessToken, $response['expires_in']);
+        } else {
+            die('Error al refrescar el token de acceso de Google.');
+        }
     }
 
     return $accessToken;
