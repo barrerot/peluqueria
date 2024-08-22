@@ -118,6 +118,8 @@ if (!isset($_SESSION['user_id'])) {
   </style>
 </head>
 <body>
+<?php include 'menu_superior.php'; ?>
+
   <h2 class="text-center my-4">Agenda</h2>
 
   <div class="container-fluid">
