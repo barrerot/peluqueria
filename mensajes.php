@@ -350,6 +350,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['respuesta_contenido']
     </style>
 </head>
 <body>
+<?php include 'menu_superior.php'; ?>
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-2">

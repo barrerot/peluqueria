@@ -37,6 +37,7 @@ if (isset($_POST['delete'])) {
     <title>Listado de Servicios</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head> <!-- Incluir el menú lateral -->
+<?php include 'menu_superior.php'; ?>
 <?php include 'menu_lateral.php'; ?>
 <body>
 <div class="container-fluid">

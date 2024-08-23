@@ -36,6 +36,7 @@ $clientes = $cliente->obtenerClientes($negocio_id);
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+<?php include 'menu_superior.php'; ?>
     <div class="container-fluid">
         <div class="row">
            <!-- Incluir el menú lateral -->

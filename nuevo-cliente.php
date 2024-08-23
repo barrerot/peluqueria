@@ -49,6 +49,7 @@ $clienteData = $id ? $cliente->obtenerClientePorId($id) : null;
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+<?php include 'menu_superior.php'; ?>
     <div class="container-fluid">
         <div class="row">
             <nav class="col-md-2 d-none d-md-block bg-light sidebar">

@@ -29,27 +29,27 @@ function toggleDay(day) {
     if (dayContent.classList.contains('no-disponible')) {
         dayContent.classList.remove('no-disponible');
         dayContent.innerHTML = '';
-        dayContent.appendChild(createIntervalRow(day, "09:00", "14:00"));  // Primer intervalo predeterminado
+        dayContent.appendChild(createIntervalRow(day, "09:00:00", "14:00:00"));  // Primer intervalo predeterminado
     } else {
         dayContent.classList.add('no-disponible');
         dayContent.innerHTML = 'No disponible';
     }
 }
 
-function createIntervalRow(day, startHour = "00:00", endHour = "00:00") {
+function createIntervalRow(day, startHour = "00:00:00", endHour = "00:00:00") {
     const intervalRow = document.createElement('div');
     intervalRow.classList.add('interval-row');
     intervalRow.innerHTML = `
         <div class="interval">
             <select class="form-control">
-                ${hours.map(hour => `<option value="${hour}" ${hour === startHour ? 'selected' : ''}>${hour}</option>`).join('')}
+                ${hours.map(hour => `<option value="${hour}" ${hour === startHour.substring(0,5) ? 'selected' : ''}>${hour}</option>`).join('')}
             </select>
             <span>-</span>
             <select class="form-control">
-                ${hours.map(hour => `<option value="${hour}" ${hour === endHour ? 'selected' : ''}>${hour}</option>`).join('')}
+                ${hours.map(hour => `<option value="${hour}" ${hour === endHour.substring(0,5) ? 'selected' : ''}>${hour}</option>`).join('')}
             </select>
         </div>
-        <button type="button" class="remove-interval" onclick="removeInterval(this)">x</button>
+        
     `;
     setTimeout(() => {
         const selects = intervalRow.querySelectorAll('select');
@@ -117,9 +117,9 @@ function addInterval(day) {
     if (!dayContent.classList.contains('no-disponible')) {
         const intervals = dayContent.getElementsByClassName('interval-row');
         if (intervals.length === 0) {
-            dayContent.appendChild(createIntervalRow(day, "09:00", "14:00")); // Primer intervalo predeterminado
+            dayContent.appendChild(createIntervalRow(day, "09:00:00", "14:00:00")); // Primer intervalo predeterminado
         } else if (intervals.length === 1) {
-            dayContent.appendChild(createIntervalRow(day, "16:00", "20:00")); // Segundo intervalo predeterminado
+            dayContent.appendChild(createIntervalRow(day, "16:00:00", "20:00:00")); // Segundo intervalo predeterminado
         } else {
             dayContent.appendChild(createIntervalRow(day)); // Intervalos adicionales sin valores predeterminados
         }

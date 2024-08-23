@@ -38,7 +38,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="../avisos.php">
                     <i class="fas fa-bell"></i>
-                    <span class="badge badge-danger">9</span>
+                    <span class="badge badge-danger">5</span>
                 </a>
             </li>
 
@@ -48,10 +48,10 @@
                     <i class="fas fa-cog"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="configDropdown">
-                    <a class="dropdown-item" href="../config-cuenta.php"><i class="fas fa-user-cog"></i> Cuenta</a>
-                    <a class="dropdown-item" href="../config-negocio.php"><i class="fas fa-briefcase"></i> Negocio</a>
-                    <a class="dropdown-item" href="../config-servicios.php"><i class="fas fa-concierge-bell"></i> Servicios</a>
-                    <a class="dropdown-item" href="../config-integraciones.php"><i class="fas fa-plug"></i> Integraciones</a>
+                    <a class="dropdown-item" href="./config-cuenta.php"><i class="fas fa-user-cog"></i> Cuenta</a>
+                    <a class="dropdown-item" href="./config-negocio.php"><i class="fas fa-briefcase"></i> Negocio</a>
+                    <a class="dropdown-item" href="./config-servicios.php"><i class="fas fa-concierge-bell"></i> Servicios</a>
+                    <a class="dropdown-item" href="./config-integraciones.php"><i class="fas fa-plug"></i> Integraciones</a>
                 </div>
             </li>
 
@@ -64,7 +64,7 @@
                     <a class="dropdown-item" href="../editprofile.php"><i class="fas fa-user-edit"></i> Editar perfil</a>
                     <a class="dropdown-item" href="../help-support.php"><i class="fas fa-question-circle"></i> Ayuda y soporte</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="../logout.php"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+                    <a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
                 </div>
             </li>
         </ul>
