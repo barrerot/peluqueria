@@ -29,21 +29,23 @@ if (!$negocio_id) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Preparar la consulta para insertar horarios
-    $stmt = $conn->prepare("INSERT INTO horarios (negocio_id, dia, hora_inicio, hora_fin) VALUES (?, ?, ?, ?)");
-
-    if (!$stmt) {
-        die('Error al preparar la consulta: ' . $conn->error);
-    }
-
     // Iniciar una transacción
     $conn->begin_transaction();
 
     try {
-        // Recorre cada día y sus intervalos de tiempo
         foreach ($_POST as $key => $value) {
             if (in_array($key, ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'])) {
                 $dia = $key;
+                
+                // Eliminar horarios existentes para este día antes de insertar los nuevos
+                $delete_stmt = $conn->prepare("DELETE FROM horarios WHERE negocio_id = ? AND dia = ?");
+                if (!$delete_stmt) {
+                    throw new Exception('Error al preparar la consulta de eliminación: ' . $conn->error);
+                }
+                $delete_stmt->bind_param('is', $negocio_id, $dia);
+                $delete_stmt->execute();
+                $delete_stmt->close();
+
                 foreach ($value as $intervalo) {
                     $hora_inicio = $intervalo['start'];
                     $hora_fin = $intervalo['end'];
@@ -53,12 +55,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         throw new Exception('Las horas de inicio y fin son requeridas para ' . $dia);
                     }
 
-                    // Enlazar parámetros y ejecutar la consulta
+                    // Insertar el nuevo horario
+                    $stmt = $conn->prepare("INSERT INTO horarios (negocio_id, dia, hora_inicio, hora_fin) VALUES (?, ?, ?, ?)");
+                    if (!$stmt) {
+                        throw new Exception('Error al preparar la consulta de inserción: ' . $conn->error);
+                    }
                     $stmt->bind_param('isss', $negocio_id, $dia, $hora_inicio, $hora_fin);
 
                     if (!$stmt->execute()) {
                         throw new Exception('Error al insertar el horario: ' . $stmt->error);
                     }
+                    $stmt->close();
                 }
             }
         }
@@ -67,7 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn->commit();
 
         // Cerrar la conexión
-        $stmt->close();
         $conn->close();
 
         // Redireccionar a listado-servicios.php
@@ -79,7 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn->rollback();
 
         // Cerrar la conexión
-        $stmt->close();
         $conn->close();
 
         // Mostrar el error

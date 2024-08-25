@@ -4,7 +4,7 @@ require_once 'db.php';
 require_once 'Servicio.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: login-form.php");
     exit();
 }
 
@@ -48,6 +48,7 @@ if (isset($_POST['delete'])) {
 </head>
 <body>
     <div class="container-fluid">
+    <?php include 'menu_superior.php'; ?>
         <div class="row">
             <!-- Incluir el menú lateral -->
             <?php include 'menu_lateral.php'; ?>

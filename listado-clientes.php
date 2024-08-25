@@ -5,7 +5,8 @@ require_once 'Cliente.php';
 use App\Cliente;
 
 if (!isset($_SESSION['user_id'])) {
-    die('Error: No se ha encontrado el ID del usuario en la sesión.');
+    header('Location: login-form.php');
+    exit();
 }
 
 $user_id = $_SESSION['user_id'];

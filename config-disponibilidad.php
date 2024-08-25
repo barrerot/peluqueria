@@ -4,7 +4,7 @@ require_once 'db.php';
 require_once 'Horario.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: login-form.php');
     exit();
 }
 

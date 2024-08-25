@@ -17,7 +17,7 @@ $usuario = new Usuario($conn);
 
 // Verificar si el usuario está autenticado
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');  // Redirigir al login si no está autenticado
+    header('Location: login-form.php');  // Redirigir al login si no está autenticado
     exit();
 }
 
