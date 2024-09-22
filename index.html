@@ -1,74 +1,456 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pantalla de Inicio - Gestión de Citas</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="stylesheet" href="./style_index.css">
+  
+  <style>
+   a,
+   button,
+   input,
+   select,
+   h1,
+   h2,
+   h3,
+   h4,
+   h5,
+   * {
+       box-sizing: border-box;
+       margin: 0;
+       padding: 0;
+       border: none;
+       text-decoration: none;
+       background: none;
+       -webkit-font-smoothing: antialiased;
+   }
+   
+   menu, ol, ul {
+       list-style-type: none;
+       margin: 0;
+       padding: 0;
+   }
+   </style>
+  <title>Reserwa</title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">NombreApp</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="login-form.php">Iniciar sesión</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./registro-form.php">Registrarse</a>
-                    </li>
-                </ul>
+  <div class="desktop">
+    <div class="hero-header-section">
+      <div class="dropdown-header-navigation">
+        <div class="header">
+          <div class="container">
+            <div class="content">
+              <img class="logo-reserwa" src="logo-reserwa0.png" />
             </div>
-        </div>
-    </nav>
-    <header class="bg-primary text-white text-center py-5">
-        <div class="container">
-            <h1>Bienvenido a NombreApp</h1>
-            <p class="lead">Gestión de citas eficiente y sencilla</p>
-            <a href="registro.html" class="btn btn-lg btn-light">Comenzar ahora</a>
-        </div>
-    </header>
-    <section class="py-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">1+M</h5>
-                            <p class="card-text">Nuevos Usuarios</p>
-                        </div>
-                    </div>
+            <div class="navigation-actions">
+              <div class="button">
+                <div class="button-base">
+                  <a href="login-form.php">
+                    <div class="text">Inicia sesión</div>
+                  </a>
                 </div>
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">2+M</h5>
-                            <p class="card-text">Citas Programadas</p>
-                        </div>
-                    </div>
+              </div>
+              <div class="button">
+                <div class="button-base2">
+                  <a href="./registro-form.php">
+                    <div class="text2">Obtener Reserwa gratis</div>
+                  </a>
                 </div>
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">200+</h5>
-                            <p class="card-text">Negocios Confiables</p>
-                        </div>
-                    </div>
-                </div>
+              </div>
             </div>
+          </div>
         </div>
-    </section>
-    <footer class="bg-light text-center py-4">
-        <div class="container">
-            <p class="text-muted mb-0">&copy; 2024 NombreApp. Todos los derechos reservados.</p>
+      </div>
+      <div class="section">
+        <div class="container2">
+          <div class="content2">
+            <div class="heading-and-supporting-text">
+              <div class="heading">Convierte cada cita en una visita</div>
+              <div class="supporting-text">
+                <span>
+                  <span class="supporting-text-span">Con</span>
+                  <span class="supporting-text-span2">Reserwa</span>
+                  <span class="supporting-text-span3">
+                    , no sólo creas y gestionas tus citas fácilmente, sino que
+                    también te aseguras de que
+                  </span>
+                  <span class="supporting-text-span4">
+                    el 100% de tus clientes acudan a su cita
+                  </span>
+                  <span class="supporting-text-span5">
+                    gracias a su sistema de
+                  </span>
+                  <span class="supporting-text-span6">
+                    recordatorios automatizados
+                  </span>
+                  <span class="supporting-text-span7">por WhatsApp</span>
+                  <span class="supporting-text-span8">.</span>
+                </span>
+              </div>
+            </div>
+            <div class="actions">
+              <div class="button">
+                <div class="button-base3">
+                  <img class="play-circle" src="play-circle0.svg" />
+                  <div class="text3">Demo</div>
+                </div>
+              </div>
+              <div class="button">
+                <div class="button-base4">
+                  <a href="./registro-form.php">
+                    <div class="text4">Obtener Reserwa gratis</div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+        <img class="img-cabecera" src="img-cabecera0.svg" />
+        <img class="img-cabecera2" src="img-cabecera1.svg" />
+      </div>
+    </div>
+    <div class="features-section">
+      <div class="container3">
+        <div class="content2">
+          <div class="heading-and-supporting-text2">
+            <div class="heading-and-subheading">
+              <div class="subheading">¿Cómo te ayudará?</div>
+              <div class="heading2">Disfruta haciendo lo que más te gusta</div>
+            </div>
+            <div class="supporting-text2">
+              <span>
+                <span class="supporting-text-2-span">Reserwa</span>
+                <span class="supporting-text-2-span2">
+                  nace para ayudarte con las tareas que más tiempo te quitan, como
+                  agendar citas, para que tú disfrutes haciendo
+                </span>
+                <span class="supporting-text-2-span3">el trabajo que amas</span>
+                <span class="supporting-text-2-span4">.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container4">
+        <div class="content3">
+          <div class="icon-and-text">
+            <div class="featured-icon">
+              <img class="mail" src="mail0.svg" />
+            </div>
+            <div class="heart"></div>
+            <div class="heading-and-supporting-text3">
+              <div class="heading3">Céntrate en lo que mejor sabes hacer</div>
+              <div class="supporting-text3">
+                Ya NO necesitas perder tu valioso tiempo negociando citas ni
+                enviando recordatorios para que no falte nadie
+              </div>
+            </div>
+          </div>
+          <div class="check-items">
+            <div class="check-item-text">
+              <img class="check-icon" src="check-icon0.svg" />
+              <div class="text-wrap">
+                <div class="text5">
+                  <span>
+                    <span class="text-5-span">Olvídate de las reservas</span>
+                    <span class="text-5-span2">: con</span>
+                    <span class="text-5-span3">Reserwa</span>
+                    <span class="text-5-span4">
+                      podrás compartir un enlace y dejar que tus clientes reserven
+                      dentro de los espacios disponibles y sin que tu intervengas
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="check-item-text">
+              <img class="check-icon2" src="check-icon1.svg" />
+              <div class="text-wrap">
+                <div class="text5">
+                  <span>
+                    <span class="text-5-span5">
+                      Olvídate de los recordatorios
+                    </span>
+                    <span class="text-5-span6">
+                      : los clientes que reserven recibirán un mensaje de
+                      confirmación inmediato y un
+                    </span>
+                    <span class="text-5-span7">recordatorio 24 horas antes</span>
+                    <span class="text-5-span8">por WhatsApp</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="content4">
+          <div class="_3-2-screen-mockup">
+            <div class="mockup-shadow"></div>
+            <img
+              class="screen-mockup-replace-fill"
+              src="screen-mockup-replace-fill0.png"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="container4">
+        <div class="content4">
+          <div class="_3-2-screen-mockup2">
+            <div class="mockup-shadow"></div>
+            <img
+              class="screen-mockup-replace-fill"
+              src="screen-mockup-replace-fill1.png"
+            />
+          </div>
+        </div>
+        <div class="content3">
+          <div class="icon-and-text">
+            <div class="featured-icon">
+              <img class="zap" src="zap0.svg" />
+            </div>
+            <div class="heading-and-supporting-text3">
+              <div class="heading3">Exprime tu agenda al máximo</div>
+              <div class="supporting-text3">
+                Sabemos que el tiempo NO es algo que precisamente te sobre. Por
+                eso, Reserwa también hace esto:
+              </div>
+            </div>
+          </div>
+          <div class="check-items">
+            <div class="check-item-text">
+              <img class="check-icon3" src="check-icon2.svg" />
+              <div class="text-wrap">
+                <div class="text5">
+                  <span>
+                    <span class="text-5-span9">Personaliza tus servicios</span>
+                    <span class="text-5-span10">
+                      : crea todos los servicios que quieras, define su duración y
+                      nosotros nos encargamos de encajarlos en tu agenda
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="check-item-text">
+              <img class="check-icon4" src="check-icon3.svg" />
+              <div class="text-wrap">
+                <div class="text5">
+                  <span>
+                    <span class="text-5-span11">Optimiza tu agenda</span>
+                    <span class="text-5-span12">
+                      : ¿Tienes servicios en los que puedes atender a más de un
+                      cliente a la vez? Define con qué otros servicios son
+                      compatibles y cuántas personas puedes atender, y nosotros te
+                      llenamos la agenda
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="check-item-text">
+              <img class="check-icon5" src="check-icon4.svg" />
+              <div class="text-wrap">
+                <div class="text5">
+                  <span>
+                    <span class="text-5-span13">
+                      Asegura clientes todo el año
+                    </span>
+                    <span class="text-5-span14">:</span>
+                    <span class="text-5-span15">Reserwa</span>
+                    <span class="text-5-span16">
+                      permite que los clientes puedan reservar más de una cita a
+                      la vez, así ellos aseguran su servicio y tú aseguras a tu
+                      cliente. Win/win
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container4">
+        <div class="content3">
+          <div class="icon-and-text">
+            <div class="featured-icon">
+              <img class="bar-chart-2" src="bar-chart-20.svg" />
+            </div>
+            <div class="heading-and-supporting-text3">
+              <div class="heading3">Analiza tus números y ¡mejóralos!</div>
+              <div class="supporting-text4">
+                <span>
+                  <span class="supporting-text-4-span">
+                    Los autónomo y PYMES no analizan sus números porque
+                  </span>
+                  <span class="supporting-text-4-span2">NO tienen tiempo</span>
+                  <span class="supporting-text-4-span3">
+                    de buscar, analizar e interpretar los datos.
+                    <br />
+                    La buena noticia es que Reserwa incluye una potente
+                    herramienta de analítica que te dirá cosas como:
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="check-items">
+            <div class="check-item-text">
+              <img class="check-icon6" src="check-icon5.svg" />
+              <div class="text-wrap">
+                <div class="text5">
+                  <span>
+                    <span class="text-5-span17">Quiénes son tus</span>
+                    <span class="text-5-span18">clientes VIP</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="check-items">
+            <div class="check-item-text">
+              <img class="check-icon7" src="check-icon6.svg" />
+              <div class="text-wrap">
+                <div class="text5">
+                  <span>
+                    <span class="text-5-span19">Qué clientes están en</span>
+                    <span class="text-5-span20">riesgo de pérdida</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="check-items">
+            <div class="check-item-text">
+              <img class="check-icon8" src="check-icon7.svg" />
+              <div class="text-wrap">
+                <div class="text5">
+                  <span>
+                    <span class="text-5-span21">Cuáles son los servicios</span>
+                    <span class="text-5-span22">más demandados</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="check-items">
+            <div class="check-item-text">
+              <img class="check-icon9" src="check-icon8.svg" />
+              <div class="text-wrap">
+                <div class="text5">
+                  <span>
+                    <span class="text-5-span23">Cuáles son los servicios</span>
+                    <span class="text-5-span24">más rentables</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="check-items">
+            <div class="check-item-text">
+              <img class="check-icon10" src="check-icon9.svg" />
+              <div class="text-wrap">
+                <div class="text5">
+                  <span>
+                    <span class="text-5-span25">Número de</span>
+                    <span class="text-5-span26">citas</span>
+                    <span class="text-5-span27">y</span>
+                    <span class="text-5-span28">facturación</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="check-items">
+            <div class="check-item-text">
+              <img class="check-icon11" src="check-icon10.svg" />
+              <div class="text6">Y mucho más...</div>
+            </div>
+          </div>
+        </div>
+        <div class="content5">
+          <div class="_3-2-screen-mockup3">
+            <div class="mockup-shadow2"></div>
+            <img
+              class="screen-mockup-replace-fill2"
+              src="screen-mockup-replace-fill2.png"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="features-section2">
+      <div class="container3">
+        <div class="content2">
+          <div class="container5">
+            <div class="content6">
+              <div class="row">
+                <div class="g-calendar">
+                  <img class="bg" src="bg0.svg" />
+                  <img class="g-calendar2" src="g-calendar1.svg" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="heading-and-supporting-text2">
+            <div class="heading-and-subheading">
+              <div class="heading2">Sincroniza todas tus citas al instante</div>
+            </div>
+            <div class="supporting-text2">
+              <span>
+                <span class="supporting-text-2-span5">Conecta tu</span>
+                <span class="supporting-text-2-span6">
+                  agenda de Google Calendar
+                </span>
+                <span class="supporting-text-2-span7">
+                  y sincroniza todas tus citas con
+                </span>
+                <span class="supporting-text-2-span8">Reserwa</span>
+                <span class="supporting-text-2-span9">. En</span>
+                <span class="supporting-text-2-span10">menos de 5 minutos</span>
+                <span class="supporting-text-2-span11">
+                  , tendrás toda tu información disponible.
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cta-section">
+      <div class="container3">
+        <div class="content7">
+          <div class="heading-and-supporting-text4">
+            <div class="heading4">Lleva tu negocio al siguiente nivel.</div>
+            <div class="supporting-text5">
+              Aprovecha las ventajas exclusivas de ser uno de los primeros.
+            </div>
+          </div>
+          <div class="actions">
+            <div class="button">
+              <div class="button-base5">
+                <a href="./registro-form.php">
+                  <div class="text2">Obtener Reserwa gratis</div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="section2">
+        <div class="container6">
+          <div class="content8">
+            <div class="footer-text">
+              © 2024 Todos los derechos reservados a Reserwa.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 </body>
 </html>

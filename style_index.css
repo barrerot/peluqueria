@@ -1,0 +1,180 @@
+/* General Styles */
+.desktop,
+.desktop * {
+  box-sizing: border-box;
+}
+
+.desktop {
+  background: var(--white, #ffffff);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-header-section {
+  background: var(--gray-50, #f9fafb);
+  padding: 0px 0px 50px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.container2, .container3, .container4 {
+  width: 100%;
+  padding: 0 15px;
+  box-sizing: border-box;
+}
+
+.content2, .content3, .content4 {
+  width: 100%;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.heading-and-supporting-text, .heading-and-supporting-text2 {
+  width: 100%;
+  padding: 0 10px;
+}
+
+.supporting-text, .supporting-text2, .supporting-text3 {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: center;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Botones generales */
+.button {
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+/* Estilo base de los botones */
+.button-base, .button-base2, .button-base3, .button-base4, .button-base5 {
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-family: 'Inter-SemiBold', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Botón principal */
+.button-base2, .button-base4, .button-base5 {
+  background-color: var(--brand-600, #7f56d9);
+  color: #ffffff;
+  border: 1px solid var(--brand-600, #7f56d9);
+}
+
+/* Hover y transiciones */
+.button-base:hover, .button-base2:hover, .button-base4:hover, .button-base5:hover {
+  background-color: #5b3caf;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Botón claro */
+.button-base3 {
+  background-color: #ffffff;
+  color: var(--gray-700, #344054);
+  border: 1px solid var(--gray-300, #d0d5dd);
+}
+
+/* Hover botón claro */
+.button-base3:hover {
+  background-color: #f7f9fc;
+  color: var(--gray-700, #344054);
+  border-color: var(--gray-500, #667085);
+}
+
+/* Texto en los botones */
+.text, .text2, .text3, .text4 {
+  color: inherit;
+  text-align: center;
+  font-family: "Inter-SemiBold", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+/* Mobile styles */
+@media (max-width: 767px) {
+  body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  .mobile, .content-section {
+    width: 100%;
+    padding: 0 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  .hero-header-section {
+    padding: 10px;
+  }
+
+  .content-section {
+    padding: 10px;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 768px) {
+  .desktop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-header-section {
+    width: 100%;
+    padding: 0px 0px 50px 0px;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .content-section {
+    width: 80%;
+    padding: 20px;
+  }
+}
