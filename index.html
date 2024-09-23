@@ -4,35 +4,33 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <link rel="stylesheet" href="./style_index.css">
-  
+  <link rel="stylesheet" href="css/vars.css">
+  <link rel="stylesheet" href="css/style_index.css">
   <style>
-   a,
-   button,
-   input,
-   select,
-   h1,
-   h2,
-   h3,
-   h4,
-   h5,
-   * {
-       box-sizing: border-box;
-       margin: 0;
-       padding: 0;
-       border: none;
-       text-decoration: none;
-       background: none;
-       -webkit-font-smoothing: antialiased;
-   }
-   
-   menu, ol, ul {
-       list-style-type: none;
-       margin: 0;
-       padding: 0;
-   }
-   </style>
+    a,
+    button,
+    input,
+    select,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        border: none;
+        text-decoration: none;
+        background: none;
+        -webkit-font-smoothing: antialiased;
+    }
+    menu, ol, ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+  </style>
   <title>Reserwa</title>
 </head>
 <body>
@@ -42,22 +40,24 @@
         <div class="header">
           <div class="container">
             <div class="content">
-              <img class="logo-reserwa" src="logo-reserwa0.png" />
+              <img class="logo-reserwa" src="img/logo-reserwa0.png" alt="Logo Reserwa">
             </div>
             <div class="navigation-actions">
               <div class="button">
-                <div class="button-base">
-                  <a href="./login-form.php">
+                <!-- Enlace al login -->
+                <a href="login-form.php">
+                  <div class="button-base">
                     <div class="text">Inicia sesión</div>
-                  </a>
-                </div>
+                  </div>
+                </a>
               </div>
               <div class="button">
-                <div class="button-base2">
-                  <a href="./registro-form.php">
+                <!-- Enlace al registro -->
+                <a href="registro-form.php">
+                  <div class="button-base2">
                     <div class="text2">Obtener Reserwa gratis</div>
-                  </a>
-                </div>
+                  </div>
+                </a>
               </div>
             </div>
           </div>
@@ -92,331 +92,172 @@
             </div>
             <div class="actions">
               <div class="button">
-                <div class="button-base3">
-                  <img class="play-circle" src="play-circle0.svg" />
-                  <div class="text3">Demo</div>
-                </div>
+                <a href="registro-form.php">
+                  <div class="button-base3">
+                    <img class="play-circle" src="img/play-circle0.svg" alt="Play Circle">
+                    <div class="text3">Demo</div>
+                  </div>
+                </a>
               </div>
               <div class="button">
-                <div class="button-base4">
-                  <a href="./registro-form.php">
+                <a href="registro-form.php">
+                  <div class="button-base4">
                     <div class="text4">Obtener Reserwa gratis</div>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <img class="img-cabecera" src="img-cabecera0.svg" />
-        <img class="img-cabecera2" src="img-cabecera1.svg" />
-      </div>
-    </div>
-    <div class="features-section">
-      <div class="container3">
-        <div class="content2">
-          <div class="heading-and-supporting-text2">
-            <div class="heading-and-subheading">
-              <div class="subheading">¿Cómo te ayudará?</div>
-              <div class="heading2">Disfruta haciendo lo que más te gusta</div>
-            </div>
-            <div class="supporting-text2">
-              <span>
-                <span class="supporting-text-2-span">Reserwa</span>
-                <span class="supporting-text-2-span2">
-                  nace para ayudarte con las tareas que más tiempo te quitan, como
-                  agendar citas, para que tú disfrutes haciendo
-                </span>
-                <span class="supporting-text-2-span3">el trabajo que amas</span>
-                <span class="supporting-text-2-span4">.</span>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="container4">
-        <div class="content3">
-          <div class="icon-and-text">
-            <div class="featured-icon">
-              <img class="mail" src="mail0.svg" />
-            </div>
-            <div class="heart"></div>
-            <div class="heading-and-supporting-text3">
-              <div class="heading3">Céntrate en lo que mejor sabes hacer</div>
-              <div class="supporting-text3">
-                Ya NO necesitas perder tu valioso tiempo negociando citas ni
-                enviando recordatorios para que no falte nadie
-              </div>
-            </div>
-          </div>
-          <div class="check-items">
-            <div class="check-item-text">
-              <img class="check-icon" src="check-icon0.svg" />
-              <div class="text-wrap">
-                <div class="text5">
-                  <span>
-                    <span class="text-5-span">Olvídate de las reservas</span>
-                    <span class="text-5-span2">: con</span>
-                    <span class="text-5-span3">Reserwa</span>
-                    <span class="text-5-span4">
-                      podrás compartir un enlace y dejar que tus clientes reserven
-                      dentro de los espacios disponibles y sin que tu intervengas
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div class="check-item-text">
-              <img class="check-icon2" src="check-icon1.svg" />
-              <div class="text-wrap">
-                <div class="text5">
-                  <span>
-                    <span class="text-5-span5">Olvídate de los recordatorios</span>
-                    <span class="text-5-span6">: los clientes que reserven recibirán un mensaje de
-                      confirmación inmediato y un
-                    </span>
-                    <span class="text-5-span7">recordatorio 24 horas antes</span>
-                    <span class="text-5-span8">por WhatsApp</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="content4">
-          <div class="_3-2-screen-mockup">
-            <div class="mockup-shadow"></div>
-            <img
-              class="screen-mockup-replace-fill"
-              src="screen-mockup-replace-fill0.png"
-            />
-          </div>
-        </div>
-      </div>
-      <div class="container4">
-        <div class="content4">
-          <div class="_3-2-screen-mockup2">
-            <div class="mockup-shadow"></div>
-            <img
-              class="screen-mockup-replace-fill"
-              src="screen-mockup-replace-fill1.png"
-            />
-          </div>
-        </div>
-        <div class="content3">
-          <div class="icon-and-text">
-            <div class="featured-icon">
-              <img class="zap" src="zap0.svg" />
-            </div>
-            <div class="heading-and-supporting-text3">
-              <div class="heading3">Exprime tu agenda al máximo</div>
-              <div class="supporting-text3">
-                Sabemos que el tiempo NO es algo que precisamente te sobre. Por
-                eso, Reserwa también hace esto:
-              </div>
-            </div>
-          </div>
-          <div class="check-items">
-            <div class="check-item-text">
-              <img class="check-icon3" src="check-icon2.svg" />
-              <div class="text-wrap">
-                <div class="text5">
-                  <span>
-                    <span class="text-5-span9">Personaliza tus servicios</span>
-                    <span class="text-5-span10">: crea todos los servicios que quieras, define su duración y
-                      nosotros nos encargamos de encajarlos en tu agenda
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div class="check-item-text">
-              <img class="check-icon4" src="check-icon3.svg" />
-              <div class="text-wrap">
-                <div class="text5">
-                  <span>
-                    <span class="text-5-span11">Optimiza tu agenda</span>
-                    <span class="text-5-span12">: ¿Tienes servicios en los que puedes atender a más de un
-                      cliente a la vez? Define con qué otros servicios son
-                      compatibles y cuántas personas puedes atender
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div class="check-item-text">
-              <img class="check-icon5" src="check-icon4.svg" />
-              <div class="text-wrap">
-                <div class="text5">
-                  <span>
-                    <span class="text-5-span13">Asegura clientes todo el año</span>
-                    <span class="text-5-span14">: Reserwa permite que los clientes puedan reservar más de una cita a
-                      la vez, así ellos aseguran su servicio y tú aseguras a tu
-                      cliente. Win/win
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="container4">
-        <div class="content3">
-          <div class="icon-and-text">
-            <div class="featured-icon">
-              <img class="bar-chart-2" src="bar-chart-20.svg" />
-            </div>
-            <div class="heading-and-supporting-text3">
-              <div class="heading3">Analiza tus números y ¡mejóralos!</div>
-              <div class="supporting-text4">
-                <span>
-                  <span class="supporting-text-4-span">Los autónomo y PYMES no analizan sus números porque</span>
-                  <span class="supporting-text-4-span2">NO tienen tiempo</span>
-                  <span class="supporting-text-4-span3">
-                    de buscar, analizar e interpretar los datos.
-                    La buena noticia es que Reserwa incluye una potente
-                    herramienta de analítica que te dirá cosas como:
-                  </span>
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="check-items">
-            <div class="check-item-text">
-              <img class="check-icon6" src="check-icon5.svg" />
-              <div class="text-wrap">
-                <div class="text5">
-                  <span>
-                    <span class="text-5-span17">Quiénes son tus</span>
-                    <span class="text-5-span18">clientes VIP</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="check-items">
-            <div class="check-item-text">
-              <img class="check-icon7" src="check-icon6.svg" />
-              <div class="text-wrap">
-                <div class="text5">
-                  <span>
-                    <span class="text-5-span19">Qué clientes están en</span>
-                    <span class="text-5-span20">riesgo de pérdida</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="check-items">
-            <div class="check-item-text">
-              <img class="check-icon8" src="check-icon7.svg" />
-              <div class="text-wrap">
-                <div class="text5">
-                  <span>
-                    <span class="text-5-span21">Cuáles son los servicios</span>
-                    <span class="text-5-span22">más demandados</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="check-items">
-            <div class="check-item-text">
-              <img class="check-icon9" src="check-icon8.svg" />
-              <div class="text-wrap">
-                <div class="text5">
-                  <span>
-                    <span class="text-5-span23">Cuáles son los servicios</span>
-                    <span class="text-5-span24">más rentables</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="check-items">
-            <div class="check-item-text">
-              <img class="check-icon10" src="check-icon9.svg" />
-              <div class="text-wrap">
-                <div class="text5">
-                  <span>
-                    <span class="text-5-span25">Número de</span>
-                    <span class="text-5-span26">citas</span>
-                    <span class="text-5-span27">y</span>
-                    <span class="text-5-span28">facturación</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="check-items">
-            <div class="check-item-text">
-              <img class="check-icon11" src="check-icon10.svg" />
-              <div class="text6">Y mucho más...</div>
-            </div>
-          </div>
-        </div>
-        <div class="content5">
-          <div class="_3-2-screen-mockup3">
-            <div class="mockup-shadow2"></div>
-            <img
-              class="screen-mockup-replace-fill2"
-              src="screen-mockup-replace-fill2.png"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="features-section2">
-      <div class="container3">
-        <div class="content2">
-          <div class="container5">
-            <div class="content6">
-              <div class="row">
-                <div class="g-calendar">
-                  <img class="bg" src="bg0.svg" />
-                  <img class="g-calendar2" src="g-calendar1.svg" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="heading-and-supporting-text2">
-            <div class="heading-and-subheading">
-              <div class="heading2">Sincroniza todas tus citas al instante</div>
-            </div>
-            <div class="supporting-text2">
-              <span>
-                <span class="supporting-text-2-span5">Conecta tu</span>
-                <span class="supporting-text-2-span6">agenda de Google Calendar</span>
-                <span class="supporting-text-2-span7">y sincroniza todas tus citas con</span>
-                <span class="supporting-text-2-span8">Reserwa</span>
-                <span class="supporting-text-2-span9">. En</span>
-                <span class="supporting-text-2-span10">menos de 5 minutos</span>
-                <span class="supporting-text-2-span11">, tendrás toda tu información disponible.</span>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="cta-section">
-      <div class="container3">
-        <div class="content7">
-          <div class="heading-and-supporting-text4">
-            <div class="heading4">Lleva tu negocio al siguiente nivel.</div>
-            <div class="supporting-text5">Aprovecha las ventajas exclusivas de ser uno de los primeros.</div>
-          </div>
-          <div class="actions">
-            <div class="button">
-              <div class="button-base5">
-                <a href="./registro-form.php">
-                  <div class="text2">Obtener Reserwa gratis</div>
+                  </div>
                 </a>
               </div>
             </div>
           </div>
         </div>
+        <img class="img-cabecera" src="img/img-cabecera0.svg" alt="Imagen Cabecera">
+        <img class="img-cabecera2" src="img/img-cabecera1.svg" alt="Imagen Cabecera 2">
       </div>
     </div>
+
+    <!-- Sección Exprime tu Agenda al Máximo -->
+    <div class="features-section">
+      <div class="container4">
+        <div class="content3">
+          <div class="icon-and-text">
+            <div class="featured-icon">
+              <img class="zap" src="img/zap0.svg" alt="Zap Icon">
+            </div>
+            <div class="heading-and-supporting-text3">
+              <div class="heading3">Exprime tu agenda al máximo</div>
+              <div class="supporting-text3">
+                Sabemos que el tiempo NO es algo que precisamente te sobre. Por eso, Reserwa también hace esto:
+              </div>
+            </div>
+          </div>
+          <div class="check-items">
+            <div class="check-item-text">
+              <img class="check-icon" src="img/check-icon0.svg" alt="Check Icon">
+              <div class="text-wrap">
+                <div class="text5">
+                  <span>Personaliza tus servicios: crea todos los servicios que quieras, define su duración y nosotros nos encargamos de encajarlos en tu agenda.</span>
+                </div>
+              </div>
+            </div>
+            <div class="check-item-text">
+              <img class="check-icon" src="img/check-icon1.svg" alt="Check Icon">
+              <div class="text-wrap">
+                <div class="text5">
+                  <span>Optimiza tu agenda: ¿Tienes servicios en los que puedes atender a más de un cliente a la vez? Define con qué otros servicios son compatibles y cuántas personas puedes atender, y nosotros te llenamos la agenda.</span>
+                </div>
+              </div>
+            </div>
+            <div class="check-item-text">
+              <img class="check-icon" src="img/check-icon2.svg" alt="Check Icon">
+              <div class="text-wrap">
+                <div class="text5">
+                  <span>Asegura clientes todo el año: Reserwa permite que los clientes puedan reservar más de una cita a la vez, así aseguran su servicio y tú aseguras a tu cliente. Win/win.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mockup Image -->
+        <div class="content4">
+          <div class="_3-2-screen-mockup2">
+            <div class="mockup-shadow"></div>
+            <img class="screen-mockup-replace-fill" src="img/screen-mockup-replace-fill1.png" alt="Screen Mockup">
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección Analiza tus Números y ¡Mejóralos! -->
+      <div class="container4">
+        <div class="content3">
+          <div class="icon-and-text">
+            <div class="featured-icon">
+              <img class="bar-chart-2" src="img/bar-chart-20.svg" alt="Bar Chart Icon">
+            </div>
+            <div class="heading-and-supporting-text3">
+              <div class="heading3">Analiza tus números y ¡mejóralos!</div>
+              <div class="supporting-text4">
+                Los autónomo y PYMES no analizan sus números porque NO tienen tiempo de buscar, analizar e interpretar los datos. La buena noticia es que Reserwa incluye una potente herramienta de analítica que te dirá cosas como:
+              </div>
+            </div>
+          </div>
+          <div class="check-items">
+            <div class="check-item-text">
+              <img class="check-icon" src="img/check-icon3.svg" alt="Check Icon">
+              <div class="text-wrap">
+                <div class="text5">
+                  <span>Quiénes son tus clientes VIP</span>
+                </div>
+              </div>
+            </div>
+            <div class="check-item-text">
+              <img class="check-icon" src="img/check-icon4.svg" alt="Check Icon">
+              <div class="text-wrap">
+                <div class="text5">
+                  <span>Qué clientes están en riesgo de pérdida</span>
+                </div>
+              </div>
+            </div>
+            <div class="check-item-text">
+              <img class="check-icon" src="img/check-icon5.svg" alt="Check Icon">
+              <div class="text-wrap">
+                <div class="text5">
+                  <span>Cuáles son los servicios más demandados</span>
+                </div>
+              </div>
+            </div>
+            <div class="check-item-text">
+              <img class="check-icon" src="img/check-icon6.svg" alt="Check Icon">
+              <div class="text-wrap">
+                <div class="text5">
+                  <span>Cuáles son los servicios más rentables</span>
+                </div>
+              </div>
+            </div>
+            <div class="check-item-text">
+              <img class="check-icon" src="img/check-icon7.svg" alt="Check Icon">
+              <div class="text-wrap">
+                <div class="text5">
+                  <span>Número de citas y facturación</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mockup Image -->
+        <div class="content4">
+          <div class="_3-2-screen-mockup2">
+            <div class="mockup-shadow"></div>
+            <img class="screen-mockup-replace-fill" src="img/screen-mockup-replace-fill2.png" alt="Analítica Mockup">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección Sincroniza tus Citas -->
+    <div class="cta-section">
+      <div class="container3">
+        <div class="content7">
+          <div class="heading-and-supporting-text4">
+            <div class="heading4">Lleva tu negocio al siguiente nivel.</div>
+            <div class="supporting-text5">
+              Aprovecha las ventajas exclusivas de ser uno de los primeros.
+            </div>
+          </div>
+          <div class="actions">
+            <div class="button">
+              <a href="registro-form.php">
+                <div class="button-base5">
+                  <div class="text2">Obtener Reserwa gratis</div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
     <div class="footer">
       <div class="section2">
         <div class="container6">
@@ -429,6 +270,5 @@
       </div>
     </div>
   </div>
-  
 </body>
 </html>
