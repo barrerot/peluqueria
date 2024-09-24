@@ -1,0 +1,183 @@
+
+/* Variables de colores */
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --font-color: #333;
+    --bg-color: #f4f4f4;
+}
+
+/* Estilos globales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: var(--font-color);
+    background-color: var(--bg-color);
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--primary-color);
+}
+
+header .logo {
+    width: 150px;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+}
+
+header nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Hero section */
+.hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    background-color: white;
+}
+
+.hero-image {
+    width: 100%;
+    max-width: 500px;
+}
+
+.hero-text {
+    text-align: center;
+    margin-left: 2rem;
+}
+
+.hero-text h1 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+}
+
+.hero-text p {
+    margin: 1rem 0;
+}
+
+.btn-primary {
+    padding: 1rem 2rem;
+    background-color: var(--secondary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+/* Features section */
+.features {
+    display: flex;
+    justify-content: space-around;
+    padding: 2rem;
+    background-color: var(--bg-color);
+}
+
+.feature-item {
+    text-align: center;
+}
+
+.feature-item img {
+    width: 50px;
+}
+
+.feature-item h3 {
+    margin: 1rem 0;
+    font-size: 1.5rem;
+}
+
+/* Contact section */
+.contact {
+    padding: 2rem;
+    text-align: center;
+    background-color: white;
+}
+
+.contact h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.contact form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.contact form label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.contact form input, 
+.contact form textarea {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.contact form button {
+    padding: 1rem 2rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 1rem;
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Media Queries */
+@media (max-width: 1440px) {
+    /* Ajustes para tablets */
+    .features {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Ajustes para móviles */
+    .hero {
+        flex-direction: column;
+    }
+
+    .hero-text {
+        margin-left: 0;
+    }
+
+    .features {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .feature-item {
+        margin-bottom: 1rem;
+    }
+
+    .contact form {
+        width: 100%;
+    }
+}
