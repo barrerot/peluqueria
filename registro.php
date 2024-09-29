@@ -71,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             );
 
             // Configuración del correo
+            $mail->CharSet = 'UTF-8';  // Establecer la codificación a UTF-8
             $mail->setFrom($_ENV['SMTP_USERNAME'], 'Administración');
             $mail->addAddress($email);
 
