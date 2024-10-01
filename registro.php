@@ -30,64 +30,63 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Generar el hash de la contraseña
     $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-    // Conexión a la base de datos
-    $db = new DB();
-    $conn = $db->getConnection();
+    // Crear el array con los datos del usuario
+    $data = [
+        'nombre' => $nombre,
+        'email' => $email,
+        'password' => $hashedPassword
+    ];
 
-    $usuario = new Usuario($conn);
+    // Crear una instancia de Usuario
+    $usuario = new Usuario($data);
 
     // Verificar si el usuario ya existe
     if ($usuario->existeUsuario($email)) {
         redirigir($_ENV['APP_URL'] . "/registro-form.php", 'error', 'Esa cuenta ya existe. Por favor, intente con otro correo electrónico.');
     }
 
-    // Generar token para la confirmación por email
-    $token = bin2hex(random_bytes(16));
+    try {
+        // Guardar el usuario en la base de datos
+        $usuario->guardar();
 
-    if ($usuario->crearUsuario($nombre, $email, $hashedPassword, $token)) {
         // Enviar email de confirmación usando PHPMailer
-        $enlace = $_ENV['APP_URL'] . "/confirmar.php?token=$token";
+        $enlace = $_ENV['APP_URL'] . "/confirmar.php?token=" . $usuario->getToken();
         $mensaje = "Para finalizar el registro, por favor confirma tu cuenta haciendo clic en el siguiente enlace: <a href='$enlace'>$enlace</a>";
 
         $mail = new PHPMailer(true);
 
-        try {
-            // Configuración del servidor SMTP
-            $mail->isSMTP();
-            $mail->Host = $_ENV['SMTP_HOST'];
-            $mail->SMTPAuth = true;
-            $mail->Username = $_ENV['SMTP_USERNAME'];
-            $mail->Password = $_ENV['SMTP_PASSWORD'];
-            $mail->SMTPSecure = $_ENV['SMTP_ENCRYPTION']; // 'tls' o 'ssl'
-            $mail->Port = $_ENV['SMTP_PORT']; // 587 para TLS o 465 para SSL
+        // Configuración del servidor SMTP
+        $mail->isSMTP();
+        $mail->Host = $_ENV['SMTP_HOST'];
+        $mail->SMTPAuth = true;
+        $mail->Username = $_ENV['SMTP_USERNAME'];
+        $mail->Password = $_ENV['SMTP_PASSWORD'];
+        $mail->SMTPSecure = $_ENV['SMTP_ENCRYPTION']; // 'tls' o 'ssl'
+        $mail->Port = $_ENV['SMTP_PORT']; // 587 para TLS o 465 para SSL
 
-            // Deshabilitar la verificación SSL/TLS temporalmente (solo para pruebas)
-            $mail->SMTPOptions = array(
-                'ssl' => array(
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
-                    'allow_self_signed' => true
-                )
-            );
+        // Configuración SSL/TLS temporalmente (solo para pruebas)
+        $mail->SMTPOptions = array(
+            'ssl' => array(
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            )
+        );
 
-            // Configuración del correo
-            $mail->CharSet = 'UTF-8';  // Establecer la codificación a UTF-8
-            $mail->setFrom($_ENV['SMTP_USERNAME'], 'Administración');
-            $mail->addAddress($email);
+        // Configuración del correo
+        $mail->CharSet = 'UTF-8';
+        $mail->setFrom($_ENV['SMTP_USERNAME'], 'Administración');
+        $mail->addAddress($email);
 
-            $mail->isHTML(true); // Enviar como HTML
-            $mail->Subject = 'Confirma tu cuenta';
-            $mail->Body    = $mensaje;
+        $mail->isHTML(true); // Enviar como HTML
+        $mail->Subject = 'Confirma tu cuenta';
+        $mail->Body    = $mensaje;
 
-            // Enviar el correo
-            $mail->send();
-            redirigir($_ENV['APP_URL'] . "/registro-form.php", 'success', 'Te hemos enviado un email para confirmar tu cuenta. Por favor, sigue las instrucciones del correo para finalizar el registro.');
-        } catch (Exception $e) {
-            // Capturar error del envío de correo
-            redirigir($_ENV['APP_URL'] . "/registro-form.php", 'error', 'Error al enviar el mensaje: ' . $mail->ErrorInfo);
-        }
-    } else {
-        redirigir($_ENV['APP_URL'] . "/registro-form.php", 'error', 'Error al crear el usuario.');
+        // Enviar el correo
+        $mail->send();
+        redirigir($_ENV['APP_URL'] . "/registro-form.php", 'success', 'Te hemos enviado un email para confirmar tu cuenta. Por favor, sigue las instrucciones del correo para finalizar el registro.');
+    } catch (Exception $e) {
+        redirigir($_ENV['APP_URL'] . "/registro-form.php", 'error', 'Error al crear el usuario o al enviar el correo: ' . $e->getMessage());
     }
 }
 ?>

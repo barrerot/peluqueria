@@ -10,24 +10,24 @@ $dotenv->load();
 if (isset($_GET['token'])) {
     $token = $_GET['token'];
 
-    $db = new DB();
-    $conn = $db->getConnection();
-
-    $usuario = new Usuario($conn);
-    if ($usuario->activarUsuario($token)) {
-        $user_data = $usuario->obtenerUsuarioPorToken($token); // Devuelve un array con 'id'
-        if ($user_data !== null) {
+    $usuario = new Usuario();
+    
+    // Obtener los datos del usuario por el token antes de activar la cuenta
+    $user_data = $usuario->obtenerUsuarioPorToken($token); // Devuelve un array con 'id'
+    
+    if ($user_data !== null) {
+        // Activar el usuario
+        if ($usuario->activarUsuario($token)) {
             $_SESSION['user_id'] = $user_data['id']; // Accede directamente al 'id'
             $_SESSION['success'] = 'Cuenta activada exitosamente. Por favor, completa tu información.';
             header("Location: " . $_ENV['APP_URL'] . "/configuracion-informacion.html");
         } else {
-            $_SESSION['error'] = "Error al obtener el ID del usuario.";
+            $_SESSION['error'] = "Error al activar la cuenta.";
             header("Location: " . $_ENV['APP_URL'] . "/registro-form.php");
         }
     } else {
-        $_SESSION['error'] = "Error al activar la cuenta.";
+        $_SESSION['error'] = "Token inválido o usuario ya activado.";
         header("Location: " . $_ENV['APP_URL'] . "/registro-form.php");
     }
 }
-
 ?>
