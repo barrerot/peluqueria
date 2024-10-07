@@ -3,7 +3,12 @@ session_start();
 require_once 'usuario.php';
 require_once 'vendor/autoload.php';  // Asegúrate de haber instalado el SDK de Stripe vía Composer
 
-\Stripe\Stripe::setApiKey('sk_test_51PSdgHP39eGeYC4STEZT5ojySKXgJjyaBMnKq6dmLfWS0vMYu1ZQRFD74ojhMuXRRlYDYtqPZyDDS3Bb26ftRFEc00iz7Pg36A');  // Clave privada de Stripe
+// Cargar variables del entorno
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+// Configurar clave secreta de Stripe desde el .env
+\Stripe\Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
 
 $user_id = $_SESSION['user_id'] ?? null;
 
@@ -110,4 +115,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Error al procesar el pago: " . $e->getMessage());
     }
 }
-?>
