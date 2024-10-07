@@ -34,7 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $data = [
         'nombre' => $nombre,
         'email' => $email,
-        'password' => $hashedPassword
+        'password' => $hashedPassword,
+        'stripe_customer_id' => null // Inicializamos con NULL, ya que en este punto aún no existe un cliente de Stripe
     ];
 
     // Crear una instancia de Usuario

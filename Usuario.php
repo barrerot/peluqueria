@@ -8,6 +8,7 @@ class Usuario {
     private $password;
     private $token;
     private $activo;
+    private $stripe_customer_id; // Nueva propiedad
 
     // Constructor
     public function __construct($data = null) {
@@ -15,6 +16,9 @@ class Usuario {
             $this->nombre = $data['nombre'];
             $this->email = $data['email'];
             $this->password = $data['password'];
+            if (isset($data['stripe_customer_id'])) {
+                $this->stripe_customer_id = $data['stripe_customer_id'];
+            }
         }
     }
 
@@ -24,10 +28,12 @@ class Usuario {
     public function getEmail() { return $this->email; }
     public function getPassword() { return $this->password; }
     public function getToken() { return $this->token; }
+    public function getStripeCustomerId() { return $this->stripe_customer_id; }
 
     public function setNombre($nombre) { $this->nombre = $nombre; }
     public function setEmail($email) { $this->email = $email; }
     public function setPassword($password) { $this->password = $password; }
+    public function setStripeCustomerId($stripe_customer_id) { $this->stripe_customer_id = $stripe_customer_id; }
 
     // Método para activar al usuario
     public function activarUsuario($token) {
@@ -65,13 +71,17 @@ class Usuario {
         $db = new DB();
         $conn = $db->getConnection();
 
-        $stmt = $conn->prepare("SELECT id FROM usuarios WHERE token = ?");
+        $stmt = $conn->prepare("SELECT id, nombre, email, stripe_customer_id FROM usuarios WHERE token = ?");
         $stmt->bind_param("s", $token);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
             $usuario = $result->fetch_assoc(); // Obtener el usuario
+            $this->id = $usuario['id'];
+            $this->nombre = $usuario['nombre'];
+            $this->email = $usuario['email'];
+            $this->stripe_customer_id = $usuario['stripe_customer_id'];
             $stmt->close();
             $conn->close();
             return $usuario;  // Devolver los datos del usuario (incluye id)
@@ -88,7 +98,7 @@ class Usuario {
         $conn = $db->getConnection();
 
         // Preparar la consulta SQL para insertar el usuario
-        $sql = "INSERT INTO usuarios (nombre, email, password, token, activo) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO usuarios (nombre, email, password, token, activo, stripe_customer_id) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
 
         if ($stmt === false) {
@@ -100,7 +110,7 @@ class Usuario {
         $this->activo = 0;
 
         // Enlazar los parámetros y ejecutar la consulta
-        $stmt->bind_param('ssssi', $this->nombre, $this->email, $this->password, $this->token, $this->activo);
+        $stmt->bind_param('sssssi', $this->nombre, $this->email, $this->password, $this->token, $this->activo, $this->stripe_customer_id);
 
         if (!$stmt->execute()) {
             throw new Exception("Error al ejecutar la consulta: " . $stmt->error);
@@ -143,11 +153,15 @@ class Usuario {
     public function obtenerUsuarioPorAuthToken($authToken) {
         $db = new DB();
         $conn = $db->getConnection();
-        $stmt = $conn->prepare("SELECT id FROM usuarios WHERE auth_token = ? AND token_expiration > NOW()");
+        $stmt = $conn->prepare("SELECT id, nombre, email, stripe_customer_id FROM usuarios WHERE auth_token = ? AND token_expiration > NOW()");
         $stmt->bind_param("s", $authToken);
         $stmt->execute();
         $result = $stmt->get_result();
         $usuario = $result->fetch_assoc();
+        $this->id = $usuario['id'];
+        $this->nombre = $usuario['nombre'];
+        $this->email = $usuario['email'];
+        $this->stripe_customer_id = $usuario['stripe_customer_id'];
         $stmt->close();
         $conn->close();
         return $usuario;

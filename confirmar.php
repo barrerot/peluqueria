@@ -20,7 +20,7 @@ if (isset($_GET['token'])) {
         if ($usuario->activarUsuario($token)) {
             $_SESSION['user_id'] = $user_data['id']; // Accede directamente al 'id'
             $_SESSION['success'] = 'Cuenta activada exitosamente. Por favor, completa tu información.';
-            header("Location: " . $_ENV['APP_URL'] . "/configuracion-informacion.html");
+            header("Location: " . $_ENV['APP_URL'] . "/config_cuenta.php");
         } else {
             $_SESSION['error'] = "Error al activar la cuenta.";
             header("Location: " . $_ENV['APP_URL'] . "/registro-form.php");
