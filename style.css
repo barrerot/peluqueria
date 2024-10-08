@@ -181,3 +181,11 @@ footer {
         width: 100%;
     }
 }
+.content4 {
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    box-sizing: border-box;
+    height: 44px;
+  }
+  

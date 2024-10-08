@@ -425,12 +425,13 @@
 }
 .text7 {
   color: var(--gray-500, #667085);
-  text-align: left;
+  text-align: center;
   font-family: var(--text-md-regular-font-family, "Inter-Regular", sans-serif);
   font-size: var(--text-md-regular-font-size, 16px);
   line-height: var(--text-md-regular-line-height, 24px);
   font-weight: var(--text-md-regular-font-weight, 400);
   position: relative;
+  flex: 1;
 }
 .section2 {
   background: var(--pink-300, #faa7e0);

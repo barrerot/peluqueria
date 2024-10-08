@@ -13,6 +13,7 @@ $dotenv->load();
 // Función para redirigir con un mensaje de error o éxito
 function redirigir($url, $tipo, $mensaje) {
     $_SESSION[$tipo] = $mensaje;
+    session_write_close(); // Asegura que la sesión se guarde antes de redirigir
     header("Location: " . $url);
     exit();
 }
@@ -85,6 +86,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Enviar el correo
         $mail->send();
+        
+        // Redirigir con mensaje de éxito
         redirigir($_ENV['APP_URL'] . "/registro-form.php", 'success', 'Te hemos enviado un email para confirmar tu cuenta. Por favor, sigue las instrucciones del correo para finalizar el registro.');
     } catch (Exception $e) {
         redirigir($_ENV['APP_URL'] . "/registro-form.php", 'error', 'Error al crear el usuario o al enviar el correo: ' . $e->getMessage());
