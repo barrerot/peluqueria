@@ -3,10 +3,10 @@ session_start();
 require_once 'db.php';
 require_once 'Horario.php';
 
-if (!isset($_SESSION['user_id'])) {
+/*if (!isset($_SESSION['user_id'])) {
     header('Location: login-form.php');
     exit();
-}
+}*/
 
 $user_id = $_SESSION['user_id'];
 $horarios = Horario::getHorariosByUserId($user_id);

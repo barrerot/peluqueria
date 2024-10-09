@@ -1,142 +1,62 @@
 <?php
-require_once 'db.php';
+require_once 'db.php'; // Incluir la clase DB para la conexión
 
 class Negocio {
     private $id;
     private $nombre;
-    private $direccion;
-    private $telefono;
     private $email;
-    private $descripcion;
+    private $imagen_portada;
+    private $numero_whatsapp;
     private $user_id;
 
-    // Getters
-    public function getId() {
-        return $this->id;
+    // Constructor
+    public function __construct($data = null) {
+        if ($data && is_array($data)) {
+            $this->nombre = $data['nombre'];
+            $this->email = $data['email'];
+            $this->numero_whatsapp = $data['numero_whatsapp'];
+            if (isset($data['imagen_portada'])) {
+                $this->imagen_portada = $data['imagen_portada'];
+            }
+            $this->user_id = $data['user_id'];
+        }
     }
 
-    public function getNombre() {
-        return $this->nombre;
-    }
+    // Getters y setters
+    public function getId() { return $this->id; }
+    public function getNombre() { return $this->nombre; }
+    public function getEmail() { return $this->email; }
+    public function getImagenPortada() { return $this->imagen_portada; }
+    public function getNumeroWhatsapp() { return $this->numero_whatsapp; }
+    public function getUserId() { return $this->user_id; }
 
-    public function getDireccion() {
-        return $this->direccion;
-    }
+    public function setNombre($nombre) { $this->nombre = $nombre; }
+    public function setEmail($email) { $this->email = $email; }
+    public function setImagenPortada($imagen_portada) { $this->imagen_portada = $imagen_portada; }
+    public function setNumeroWhatsapp($numero_whatsapp) { $this->numero_whatsapp = $numero_whatsapp; }
+    public function setUserId($user_id) { $this->user_id = $user_id; }
 
-    public function getTelefono() {
-        return $this->telefono;
-    }
-
-    public function getEmail() {
-        return $this->email;
-    }
-
-    public function getDescripcion() {
-        return $this->descripcion;
-    }
-
-    public function getUserId() {
-        return $this->user_id;
-    }
-
-    // Setters
-    public function setNombre($nombre) {
-        $this->nombre = $nombre;
-    }
-
-    public function setDireccion($direccion) {
-        $this->direccion = $direccion;
-    }
-
-    public function setTelefono($telefono) {
-        $this->telefono = $telefono;
-    }
-
-    public function setEmail($email) {
-        $this->email = $email;
-    }
-
-    public function setDescripcion($descripcion) {
-        $this->descripcion = $descripcion;
-    }
-
-    public function setUserId($user_id) {
-        $this->user_id = $user_id;
-    }
-
-    // Método para guardar un nuevo negocio
+    // Método para guardar el negocio en la base de datos
     public function guardar() {
         $db = new DB();
         $conn = $db->getConnection();
 
-        $stmt = $conn->prepare("INSERT INTO negocios (nombre, direccion, telefono, email, descripcion, user_id) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssssi", $this->nombre, $this->direccion, $this->telefono, $this->email, $this->descripcion, $this->user_id);
+        $sql = "INSERT INTO negocios (nombre, email, imagen_portada, numero_whatsapp, user_id) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
 
-        if ($stmt->execute()) {
-            $this->id = $conn->insert_id; // Obtiene el ID del negocio recién creado
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    // Método para obtener un negocio por user_id
-    public static function obtenerPorUserId($user_id) {
-        $db = new DB();
-        $conn = $db->getConnection();
-
-        $stmt = $conn->prepare("SELECT * FROM negocios WHERE user_id = ?");
-        $stmt->bind_param("i", $user_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($row = $result->fetch_assoc()) {
-            $negocio = new Negocio();
-            $negocio->id = $row['id'];
-            $negocio->nombre = $row['nombre'];
-            $negocio->direccion = $row['direccion'];
-            $negocio->telefono = $row['telefono'];
-            $negocio->email = $row['email'];
-            $negocio->descripcion = $row['descripcion'];
-            $negocio->user_id = $row['user_id'];
-
-            return $negocio;
-        } else {
-            return null; // No se encontró el negocio
-        }
-    }
-
-    // Método para actualizar un negocio existente
-    public function actualizar() {
-        $db = new DB();
-        $conn = $db->getConnection();
-
-        $stmt = $conn->prepare("UPDATE negocios SET nombre = ?, direccion = ?, telefono = ?, email = ?, descripcion = ? WHERE user_id = ?");
-        $stmt->bind_param("sssssi", $this->nombre, $this->direccion, $this->telefono, $this->email, $this->descripcion, $this->user_id);
-
-        return $stmt->execute();
-    }
-
-    // Método para obtener todos los negocios
-    public static function getAll() {
-        $db = new DB();
-        $conn = $db->getConnection();
-
-        $result = $conn->query("SELECT * FROM negocios");
-        $negocios = [];
-        while ($row = $result->fetch_assoc()) {
-            $negocio = new Negocio();
-            $negocio->id = $row['id'];
-            $negocio->nombre = $row['nombre'];
-            $negocio->direccion = $row['direccion'];
-            $negocio->telefono = $row['telefono'];
-            $negocio->email = $row['email'];
-            $negocio->descripcion = $row['descripcion'];
-            $negocio->user_id = $row['user_id'];
-            $negocios[] = $negocio;
+        if ($stmt === false) {
+            throw new Exception("Error al preparar la consulta: " . $conn->error);
         }
 
-        return $negocios;
+        $stmt->bind_param('ssssi', $this->nombre, $this->email, $this->imagen_portada, $this->numero_whatsapp, $this->user_id);
+
+        if (!$stmt->execute()) {
+            throw new Exception("Error al ejecutar la consulta: " . $stmt->error);
+        }
+
+        $this->id = $conn->insert_id;
+
+        $stmt->close();
+        $conn->close();
     }
 }
-?>
