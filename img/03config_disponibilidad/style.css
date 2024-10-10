@@ -1381,3 +1381,50 @@
   flex-shrink: 0;
   position: relative;
 }
+
+.day-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.day-label {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  margin-right: 20px;
+}
+
+.day-content {
+  flex-grow: 1; /* Para que el contenido del día ocupe todo el espacio */
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* Añadir espacio entre las franjas */
+}
+
+.interval-row {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Espacio entre selectores */
+}
+
+.remove-icon {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  margin-left: 10px;
+}
+
+.action-icons {
+  display: flex;
+  flex-direction: column; /* Iconos apilados verticalmente */
+  align-items: center;
+  gap: 10px; /* Espacio entre los iconos de añadir y duplicar */
+}
+
+.action-icon {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}

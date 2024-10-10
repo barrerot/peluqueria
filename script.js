@@ -10,16 +10,27 @@ function addDay() {
     const daysContainer = document.getElementById('days-container');
     days.forEach(day => {
         const dayDiv = document.createElement('div');
-        dayDiv.classList.add('form-group', 'day-div');
+        dayDiv.classList.add('day-row');
         dayDiv.innerHTML = `
-            <label>
+            <label class="day-label">
                 <input type="checkbox" class="day-checkbox" onclick="toggleDay('${day}')"> ${day}
             </label>
-            <div id="${day}-content" class="day-content no-disponible">No disponible</div>
-            <img src="./img/03config_disponibilidad/x0.svg" alt="Remove" onclick="removeDay('${day}')" style="cursor: pointer; width: 16px; height: 16px;">
-        <img src="./img/03config_disponibilidad/copy0.svg" alt="Duplicate" onclick="openDuplicateModal('${day}')" style="cursor: pointer; width: 16px; height: 16px;">
-    <img src="./img/03config_disponibilidad/plus0.svg" alt="Add Interval" onclick="addInterval('${day}')" style="cursor: pointer; width: 16px; height: 16px;">
-
+            <div id="${day}-content" class="day-content no-disponible">
+                <div class="interval-row">
+                    <select class="form-control">
+                        ${hours.map(hour => `<option value="${hour}">${hour}</option>`).join('')}
+                    </select>
+                    <span>-</span>
+                    <select class="form-control">
+                        ${hours.map(hour => `<option value="${hour}">${hour}</option>`).join('')}
+                    </select>
+                    <img src="./img/03config_disponibilidad/x0.svg" alt="Remove Interval" onclick="removeInterval(this)" class="remove-icon">
+                </div>
+            </div>
+            <div class="action-icons">
+                <img src="./img/03config_disponibilidad/plus0.svg" alt="Add Interval" onclick="addInterval('${day}')" class="action-icon">
+                <img src="./img/03config_disponibilidad/copy0.svg" alt="Duplicate Day" onclick="openDuplicateModal('${day}')" class="action-icon">
+            </div>
         `;
         daysContainer.appendChild(dayDiv);
     });
@@ -49,18 +60,14 @@ function createIntervalRow(day, startHour = "00:00:00", endHour = "00:00:00") {
             <select class="form-control">
                 ${hours.map(hour => `<option value="${hour}" ${hour === endHour.substring(0,5) ? 'selected' : ''}>${hour}</option>`).join('')}
             </select>
+            <img src="./img/03config_disponibilidad/x0.svg" alt="Remove Interval" onclick="removeInterval(this)" class="remove-icon">
         </div>
-        
     `;
-    setTimeout(() => {
-        const selects = intervalRow.querySelectorAll('select');
-        selects.forEach(select => new Choices(select, { shouldSort: false, itemSelectText: '' }));
-    }, 0);
     return intervalRow;
 }
 
 function removeDay(day) {
-    const dayDiv = document.querySelector(`.day-div input[onclick="toggleDay('${day}')"]`).closest('.day-div');
+    const dayDiv = document.querySelector(`.day-row input[onclick="toggleDay('${day}')"]`).closest('.day-row');
     dayDiv.remove();
 }
 
@@ -98,32 +105,63 @@ function confirmDuplicate() {
     const intervals = Array.from(originalDayContent.getElementsByClassName('interval-row'));
 
     selectedDays.forEach(day => {
-        const dayDiv = document.querySelector(`.day-div input[onclick="toggleDay('${day}')"]`).closest('.day-div');
-        const dayContent = dayDiv.querySelector('.day-content');
-        dayContent.innerHTML = '';
+        let dayDiv = document.querySelector(`.day-row input[onclick="toggleDay('${day}')"]`);
+        
+        // Si no existe el día, lo creamos
+        if (!dayDiv) {
+            addDayForDuplication(day);
+            dayDiv = document.querySelector(`.day-row input[onclick="toggleDay('${day}')"]`);
+        }
+
+        const dayDivActualizado = dayDiv.closest('.day-row');
+        const dayContent = dayDivActualizado.querySelector('.day-content');
+        dayContent.innerHTML = ''; // Limpiar contenido
+
         intervals.forEach(interval => {
             const startHour = interval.querySelector('select').value;
             const endHour = interval.querySelectorAll('select')[1].value;
             dayContent.appendChild(createIntervalRow(day, startHour, endHour));
         });
+
         dayContent.classList.remove('no-disponible');
-        dayDiv.querySelector('.day-checkbox').checked = true;  // Activar el checkbox del día duplicado
+        dayDivActualizado.querySelector('.day-checkbox').checked = true;  // Activar el checkbox del día duplicado
     });
 
     $('#duplicateModal').modal('hide');
 }
 
+function addDayForDuplication(day) {
+    const daysContainer = document.getElementById('days-container');
+    const dayDiv = document.createElement('div');
+    dayDiv.classList.add('day-row');
+    dayDiv.innerHTML = `
+        <label class="day-label">
+            <input type="checkbox" class="day-checkbox" onclick="toggleDay('${day}')"> ${day}
+        </label>
+        <div id="${day}-content" class="day-content no-disponible"></div>
+        <div class="action-icons">
+            <img src="./img/03config_disponibilidad/plus0.svg" alt="Add Interval" onclick="addInterval('${day}')" class="action-icon">
+            <img src="./img/03config_disponibilidad/copy0.svg" alt="Duplicate Day" onclick="openDuplicateModal('${day}')" class="action-icon">
+        </div>
+    `;
+    daysContainer.appendChild(dayDiv);
+}
+
 function addInterval(day) {
     const dayContent = document.getElementById(`${day}-content`);
-    if (!dayContent.classList.contains('no-disponible')) {
-        const intervals = dayContent.getElementsByClassName('interval-row');
-        if (intervals.length === 0) {
-            dayContent.appendChild(createIntervalRow(day, "09:00:00", "14:00:00")); // Primer intervalo predeterminado
-        } else if (intervals.length === 1) {
-            dayContent.appendChild(createIntervalRow(day, "16:00:00", "20:00:00")); // Segundo intervalo predeterminado
-        } else {
-            dayContent.appendChild(createIntervalRow(day)); // Intervalos adicionales sin valores predeterminados
-        }
+    const intervals = dayContent.getElementsByClassName('interval-row');
+    
+    // Si no hay franjas horarias, añade la primera franja predeterminada (09:00 a 14:00)
+    if (intervals.length === 0) {
+        dayContent.appendChild(createIntervalRow(day, "09:00:00", "14:00:00"));
+    }
+    // Si ya hay una franja horaria, añade la segunda predeterminada (16:00 a 20:00)
+    else if (intervals.length === 1) {
+        dayContent.appendChild(createIntervalRow(day, "16:00:00", "20:00:00"));
+    }
+    // Para franjas adicionales, las deja vacías para que el usuario las configure
+    else {
+        dayContent.appendChild(createIntervalRow(day, "00:00", "00:00")); // Vacío para franjas adicionales
     }
 }
 
