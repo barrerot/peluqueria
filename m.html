@@ -121,6 +121,11 @@
         .no-disponible {
             color: red;
         }
+        /* Evitar que el span herede el color rojo de la clase no-disponible */
+.no-disponible .interval-row span {
+    color: #333 !important; /* Sobreescribe cualquier color heredado dentro de no-disponible */
+}
+
     </style>
 </head>
 <body>
