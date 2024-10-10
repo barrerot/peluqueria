@@ -16,9 +16,10 @@ function addDay() {
                 <input type="checkbox" class="day-checkbox" onclick="toggleDay('${day}')"> ${day}
             </label>
             <div id="${day}-content" class="day-content no-disponible">No disponible</div>
-            <button type="button" class="btn btn-danger btn-sm" onclick="removeDay('${day}')">x</button>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="openDuplicateModal('${day}')">⧉</button>
-            <button type="button" class="btn btn-success btn-sm" onclick="addInterval('${day}')">+</button>
+            <img src="./img/03config_disponibilidad/x0.svg" alt="Remove" onclick="removeDay('${day}')" style="cursor: pointer; width: 16px; height: 16px;">
+        <img src="./img/03config_disponibilidad/copy0.svg" alt="Duplicate" onclick="openDuplicateModal('${day}')" style="cursor: pointer; width: 16px; height: 16px;">
+    <img src="./img/03config_disponibilidad/plus0.svg" alt="Add Interval" onclick="addInterval('${day}')" style="cursor: pointer; width: 16px; height: 16px;">
+
         `;
         daysContainer.appendChild(dayDiv);
     });
