@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Guardar el negocio en la base de datos
         $negocio->guardar();
         echo "Negocio guardado exitosamente.";
-        header("Location: ./configuracion-horario.html");
+        header("Location: ./config_disponibilidad.php");
     } catch (Exception $e) {
         echo "Error: " . $e->getMessage();
     }

@@ -17,11 +17,11 @@ function addDay() {
             </label>
             <div id="${day}-content" class="day-content no-disponible">
                 <div class="interval-row">
-                    <select class="form-control">
+                    <select name="${day}[start][]" class="form-control">
                         ${hours.map(hour => `<option value="${hour}">${hour}</option>`).join('')}
                     </select>
                     <span>-</span>
-                    <select class="form-control">
+                    <select name="${day}[end][]" class="form-control">
                         ${hours.map(hour => `<option value="${hour}">${hour}</option>`).join('')}
                     </select>
                     <img src="./img/03config_disponibilidad/x0.svg" alt="Remove Interval" onclick="removeInterval(this)" class="remove-icon">
@@ -41,34 +41,29 @@ function toggleDay(day) {
     if (dayContent.classList.contains('no-disponible')) {
         dayContent.classList.remove('no-disponible');
         dayContent.innerHTML = '';
-        dayContent.appendChild(createIntervalRow(day, "09:00:00", "14:00:00"));  // Primer intervalo predeterminado
+        dayContent.appendChild(createIntervalRow(day, "09:00", "14:00")); // Primer intervalo predeterminado
     } else {
         dayContent.classList.add('no-disponible');
         dayContent.innerHTML = 'No disponible';
     }
 }
 
-function createIntervalRow(day, startHour = "00:00:00", endHour = "00:00:00") {
+function createIntervalRow(day, startHour = "00:00", endHour = "00:00") {
     const intervalRow = document.createElement('div');
     intervalRow.classList.add('interval-row');
     intervalRow.innerHTML = `
         <div class="interval">
-            <select class="form-control">
-                ${hours.map(hour => `<option value="${hour}" ${hour === startHour.substring(0,5) ? 'selected' : ''}>${hour}</option>`).join('')}
+            <select name="${day}[start][]" class="form-control">
+                ${hours.map(hour => `<option value="${hour}" ${hour === startHour ? 'selected' : ''}>${hour}</option>`).join('')}
             </select>
             <span>-</span>
-            <select class="form-control">
-                ${hours.map(hour => `<option value="${hour}" ${hour === endHour.substring(0,5) ? 'selected' : ''}>${hour}</option>`).join('')}
+            <select name="${day}[end][]" class="form-control">
+                ${hours.map(hour => `<option value="${hour}" ${hour === endHour ? 'selected' : ''}>${hour}</option>`).join('')}
             </select>
             <img src="./img/03config_disponibilidad/x0.svg" alt="Remove Interval" onclick="removeInterval(this)" class="remove-icon">
         </div>
     `;
     return intervalRow;
-}
-
-function removeDay(day) {
-    const dayDiv = document.querySelector(`.day-row input[onclick="toggleDay('${day}')"]`).closest('.day-row');
-    dayDiv.remove();
 }
 
 function removeInterval(button) {
@@ -90,7 +85,7 @@ function openDuplicateModal(day) {
             duplicateDaysContainer.appendChild(dayCheckbox);
         }
     });
-    $('#duplicateModal').modal('show'); // Asegurarse de que el modal se abra
+    $('#duplicateModal').modal('show');
 }
 
 function confirmDuplicate() {
@@ -106,8 +101,6 @@ function confirmDuplicate() {
 
     selectedDays.forEach(day => {
         let dayDiv = document.querySelector(`.day-row input[onclick="toggleDay('${day}')"]`);
-        
-        // Si no existe el día, lo creamos
         if (!dayDiv) {
             addDayForDuplication(day);
             dayDiv = document.querySelector(`.day-row input[onclick="toggleDay('${day}')"]`);
@@ -115,7 +108,7 @@ function confirmDuplicate() {
 
         const dayDivActualizado = dayDiv.closest('.day-row');
         const dayContent = dayDivActualizado.querySelector('.day-content');
-        dayContent.innerHTML = ''; // Limpiar contenido
+        dayContent.innerHTML = ''; 
 
         intervals.forEach(interval => {
             const startHour = interval.querySelector('select').value;
@@ -124,7 +117,7 @@ function confirmDuplicate() {
         });
 
         dayContent.classList.remove('no-disponible');
-        dayDivActualizado.querySelector('.day-checkbox').checked = true;  // Activar el checkbox del día duplicado
+        dayDivActualizado.querySelector('.day-checkbox').checked = true;
     });
 
     $('#duplicateModal').modal('hide');
@@ -150,18 +143,12 @@ function addDayForDuplication(day) {
 function addInterval(day) {
     const dayContent = document.getElementById(`${day}-content`);
     const intervals = dayContent.getElementsByClassName('interval-row');
-    
-    // Si no hay franjas horarias, añade la primera franja predeterminada (09:00 a 14:00)
     if (intervals.length === 0) {
-        dayContent.appendChild(createIntervalRow(day, "09:00:00", "14:00:00"));
-    }
-    // Si ya hay una franja horaria, añade la segunda predeterminada (16:00 a 20:00)
-    else if (intervals.length === 1) {
-        dayContent.appendChild(createIntervalRow(day, "16:00:00", "20:00:00"));
-    }
-    // Para franjas adicionales, las deja vacías para que el usuario las configure
-    else {
-        dayContent.appendChild(createIntervalRow(day, "00:00", "00:00")); // Vacío para franjas adicionales
+        dayContent.appendChild(createIntervalRow(day, "09:00", "14:00"));
+    } else if (intervals.length === 1) {
+        dayContent.appendChild(createIntervalRow(day, "16:00", "20:00"));
+    } else {
+        dayContent.appendChild(createIntervalRow(day, "00:00", "00:00"));
     }
 }
 
@@ -171,33 +158,16 @@ addDay();
 // Agregar evento submit al formulario
 document.getElementById('horario-form').addEventListener('submit', function(event) {
     event.preventDefault();
-    
     const formData = new FormData(this);
-    
-    // Aquí puedes recorrer todos los días y sus intervalos para añadirlos a formData
-    days.forEach(day => {
-        const dayContent = document.getElementById(`${day}-content`);
-        if (!dayContent.classList.contains('no-disponible')) {
-            const intervals = Array.from(dayContent.getElementsByClassName('interval-row'));
-            intervals.forEach((interval, index) => {
-                const startHour = interval.querySelector('select').value;
-                const endHour = interval.querySelectorAll('select')[1].value;
-                formData.append(`${day}[${index}][start]`, startHour);
-                formData.append(`${day}[${index}][end]`, endHour);
-            });
-        }
-    });
 
     fetch('guardar_horario.php', {
         method: 'POST',
         body: formData
     }).then(response => {
         if (response.ok) {
-            // Redirigir al usuario a listado-servicios.php
-            window.location.href = 'configuracion-servicios.html';
+            window.location.href = 'listado-servicios.php';
         } else {
-            // Manejar error si es necesario
-            console.error('Error en la solicitud:', response.statusText);
+            response.text().then(text => console.error('Error en la solicitud:', text));
         }
     }).catch((error) => {
         console.error('Error:', error);

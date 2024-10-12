@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    header('Location: configuracion-servicios.html');
+    //header('Location: configuracion-servicios.html');
     exit();
 }
 ?>
