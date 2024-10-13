@@ -237,7 +237,7 @@
                 </div>
 
                 <div class="footer2">
-                  <button type="submit" class="button-base3">Guardar configuración</button>
+                  <button type="submit" class="button-base3">Ir al paso 3 de 5</button>
                 </div>
               </div>
             </div>

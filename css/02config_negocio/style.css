@@ -857,6 +857,7 @@
     0px 1px 2px 0px rgba(16, 24, 40, 0.05)
   );
   overflow: hidden;
+  cursor: pointer;
 }
 .text13 {
   color: var(--white, #ffffff);
