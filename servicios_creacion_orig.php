@@ -8,8 +8,8 @@
   <title>Crear Servicio</title>
 </head>
 <body>
-  <div>
-    <div>
+  <div class="modal">
+    <div class="modal2">
       <div class="content">
         <div class="featured-icon">
           <img class="ic-outline-room-service" src="./img/servicios_creacion/ic-outline-room-service0.svg"/>
