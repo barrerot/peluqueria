@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="./vars.css">
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./css/05_config_integraciones/vars.css">
+  <link rel="stylesheet" href="./css/05_config_integraciones/style.css">
   
   
   <style>
@@ -62,7 +62,7 @@
             <div class="nav-item-dropdown-base">
               <div class="nav-item-base">
                 <div class="content3">
-                  <img class="calendar" src="calendar0.svg" />
+                  <img class="calendar" src="./img/05_config_integraciones/calendar0.svg" />
                   <div class="text">Agenda</div>
                 </div>
                 <div class="actions"></div>
@@ -71,7 +71,7 @@
             <div class="nav-item-dropdown-base">
               <div class="nav-item-base">
                 <div class="content3">
-                  <img class="users" src="users0.svg" />
+                  <img class="users" src="./img/05_config_integraciones/users0.svg" />
                   <div class="text">Clientes</div>
                 </div>
                 <div class="actions"></div>
@@ -80,7 +80,7 @@
             <div class="nav-item-dropdown-base">
               <div class="nav-item-base2">
                 <div class="content3">
-                  <img class="message-square" src="message-square0.svg" />
+                  <img class="message-square" src="./img/05_config_integraciones/message-square0.svg" />
                   <div class="text">Mensajes</div>
                 </div>
                 <div class="actions"></div>
@@ -89,7 +89,7 @@
             <div class="nav-item-dropdown-base">
               <div class="nav-item-base2">
                 <div class="content3">
-                  <img class="pie-chart" src="pie-chart0.svg" />
+                  <img class="pie-chart" src="./img/05_config_integraciones/pie-chart0.svg" />
                   <div class="text">Analíticas</div>
                 </div>
                 <div class="actions"></div>
@@ -98,7 +98,7 @@
           </div>
         </div>
         <div class="footer">
-          <img class="divider" src="divider0.svg" />
+          <img class="divider" src="./img/05_config_integraciones/divider0.svg" />
           <div class="nav-featured-card">
             <div class="text-and-supporting-text">
               <div class="title">
@@ -129,7 +129,7 @@
           </div>
         </div>
       </div>
-      <img class="divider2" src="divider1.svg" />
+      <img class="divider2" src="./img/05_config_integraciones/divider1.svg" />
     </div>
     <div class="main">
       <div class="header-section">
@@ -139,25 +139,25 @@
             <div class="content4">
               <div class="button2">
                 <div class="button-base2">
-                  <img class="zap" src="zap0.svg" />
+                  <img class="zap" src="./img/05_config_integraciones/zap0.svg" />
                   <div class="text6">Mejorar plan</div>
                 </div>
               </div>
               <div class="actions3">
                 <div class="nav-item-button">
-                  <img class="search" src="search0.svg" />
+                  <img class="search" src="./img/05_config_integraciones/search0.svg" />
                 </div>
                 <div class="nav-item-button2">
-                  <img class="settings" src="settings0.svg" />
+                  <img class="settings" src="./img/05_config_integraciones/settings0.svg" />
                 </div>
                 <div class="nav-item-button">
-                  <img class="bell" src="bell0.svg" />
+                  <img class="bell" src="./img/05_config_integraciones/bell0.svg" />
                 </div>
               </div>
               <div class="dropdown">
-                <img class="avatar" src="avatar0.png" />
+                <img class="avatar" src="./img/05_config_integraciones/avatar0.png" />
               </div>
-              <img class="chevron-down" src="chevron-down0.svg" />
+              <img class="chevron-down" src="./img/05_config_integraciones/chevron-down0.svg" />
             </div>
           </div>
           <div class="stepper-horizontal">
@@ -166,7 +166,7 @@
                 <div class="icon">
                   <div class="circle"></div>
                 </div>
-                <img class="icon-action-check" src="icon-action-check0.svg" />
+                <img class="icon-action-check" src="./img/05_config_integraciones/icon-action-check0.svg" />
               </div>
               <div class="text7">Cuenta</div>
             </div>
@@ -178,7 +178,7 @@
                 <div class="icon">
                   <div class="circle"></div>
                 </div>
-                <img class="icon-action-check2" src="icon-action-check1.svg" />
+                <img class="icon-action-check2" src="./img/05_config_integraciones/icon-action-check1.svg" />
               </div>
               <div class="text8">Negocio</div>
             </div>
@@ -190,7 +190,7 @@
                 <div class="icon">
                   <div class="circle"></div>
                 </div>
-                <img class="icon-action-check3" src="icon-action-check2.svg" />
+                <img class="icon-action-check3" src="./img/05_config_integraciones/icon-action-check2.svg" />
               </div>
               <div class="text9">Disponibilidad</div>
             </div>
@@ -202,7 +202,7 @@
                 <div class="icon">
                   <div class="circle"></div>
                 </div>
-                <img class="icon-action-check4" src="icon-action-check3.svg" />
+                <img class="icon-action-check4" src="./img/05_config_integraciones/icon-action-check3.svg" />
               </div>
               <div class="text10">Servicios</div>
             </div>
@@ -243,8 +243,8 @@
                 <div class="checkbox-group-item">
                   <div class="content7">
                     <div class="g-calendar">
-                      <img class="bg" src="bg0.svg" />
-                      <img class="g-calendar2" src="g-calendar1.svg" />
+                      <img class="bg" src="./img/05_config_integraciones/bg0.svg" />
+                      <img class="g-calendar2" src="./img/05_config_integraciones/g-calendar1.svg" />
                     </div>
                     <div class="text-and-supporting-text3">
                       <div class="text13">Integra tu calendario de Google</div>
@@ -253,8 +253,7 @@
                   <div class="modal-actions">
                     <div class="button3">
                       <div class="button-base3">
-                        <img class="plus" src="plus0.svg" />
-                        <div class="text14">Añadir servicio</div>
+                        <div class="text14">Vincular</div>
                       </div>
                     </div>
                   </div>
