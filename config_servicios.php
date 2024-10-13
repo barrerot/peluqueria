@@ -236,16 +236,8 @@
               </div>
             </div>
             <div class="actions4">
-              <div class="button2">
-                <div class="button-base2">
-                  <div class="text6">Volver</div>
-                </div>
-              </div>
-              <div class="button2">
-                <div class="button-base3">
-                  <div class="text13">Ir al paso 5 de 5</div>
-                </div>
-              </div>
+              
+              
             </div>
             <div class="divider3"></div>
             <div class="content6">
