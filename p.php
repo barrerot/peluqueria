@@ -46,8 +46,8 @@ $conn->close();
   
   <!-- Incluimos los CSS -->
   <link rel="stylesheet" href="./css/servicios_listado/vars.css">
-<link rel="stylesheet" href="./css/servicios_listado/style.css">
-<link rel="stylesheet" href="./css/menu/menu_style.css"> <!-- Último -->
+  <link rel="stylesheet" href="./css/servicios_listado/style.css">
+  <link rel="stylesheet" href="./css/menu/style.css"> <!-- Nuevo archivo CSS -->
   
   <title>Listado de Servicios</title>
   <style>
@@ -197,9 +197,7 @@ $conn->close();
                   <div class="button3">
                     <div class="button-base3">
                       <img class="plus" src="./img/servicios_listado/plus0.svg" />
-                      <div class="button-base3" style="background-color: #7f56d9; color: #ffffff; padding: 10px 16px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;">
-  <span style="font-size: 14px; font-weight: 600;"><img class="plus" src="./img/servicios_listado/plus0.svg" /> Añadir servicio</span>
-</div>
+                      <div class="text14">Añadir servicio</div>
                     </div>
                   </div>
                 </div>
@@ -210,11 +208,5 @@ $conn->close();
       </div>
     </div>
   </div>
-  
-
-
-
-
-
 </body>
 </html>

@@ -1,0 +1,59 @@
+.sidebar-navigation {
+    background: var(--white, #ffffff);
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 260px;
+  }
+  
+  .nav {
+    padding: 32px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+  
+  .logo-reserwa {
+    width: 192px;
+    height: 56px;
+  }
+  
+  .nav-item-base, .nav-item-base2 {
+    background: var(--white, #ffffff);
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .text, .text2, .text3, .text4, .text5, .text6, .text7, .text8 {
+    font-family: "Inter-SemiBold", sans-serif;
+    font-weight: 600;
+  }
+  
+  .progress-bar2 {
+    border-radius: 8px;
+    height: 8px;
+  }
+  
+  .bottom-border2 {
+    background: var(--brand-700, #6941c6);
+    height: 4px;
+  }
+  
+  .button-base2, .button-base3 {
+    background: var(--white, #ffffff);
+    border-radius: 8px;
+    display: flex;
+    padding: 10px 16px;
+  }
+  
+  
+  .avatar {
+    border-radius: 200px;
+    width: 40px;
+    height: 40px;
+  }
+  

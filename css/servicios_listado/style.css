@@ -1025,7 +1025,7 @@
   flex: 1;
   position: relative;
 }
-.button-base3 {
+.button-base3_servicio {
   background: var(--brand-600, #7f56d9);
   border-radius: 8px;
   border-style: solid;

@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $conn->commit();
         $conn->close();
-        header('Location: listado-servicios.php');
+        header('Location: config_servicios.php');
         exit();
 
     } catch (Exception $e) {

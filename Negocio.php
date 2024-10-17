@@ -1,62 +1,78 @@
 <?php
-require_once 'db.php'; // Incluir la clase DB para la conexión
-
 class Negocio {
-    private $id;
+    private $conn;
     private $nombre;
     private $email;
     private $imagen_portada;
     private $numero_whatsapp;
     private $user_id;
 
-    // Constructor
-    public function __construct($data = null) {
-        if ($data && is_array($data)) {
-            $this->nombre = $data['nombre'];
-            $this->email = $data['email'];
-            $this->numero_whatsapp = $data['numero_whatsapp'];
-            if (isset($data['imagen_portada'])) {
-                $this->imagen_portada = $data['imagen_portada'];
-            }
-            $this->user_id = $data['user_id'];
-        }
+    // Constructor que recibe la conexión a la base de datos y los datos del negocio
+    public function __construct($conn, $nombre, $email, $imagen_portada, $numero_whatsapp, $user_id) {
+        $this->conn = $conn;
+        $this->nombre = $nombre;
+        $this->email = $email;
+        $this->imagen_portada = $imagen_portada;
+        $this->numero_whatsapp = $numero_whatsapp;
+        $this->user_id = $user_id;
     }
-
-    // Getters y setters
-    public function getId() { return $this->id; }
-    public function getNombre() { return $this->nombre; }
-    public function getEmail() { return $this->email; }
-    public function getImagenPortada() { return $this->imagen_portada; }
-    public function getNumeroWhatsapp() { return $this->numero_whatsapp; }
-    public function getUserId() { return $this->user_id; }
-
-    public function setNombre($nombre) { $this->nombre = $nombre; }
-    public function setEmail($email) { $this->email = $email; }
-    public function setImagenPortada($imagen_portada) { $this->imagen_portada = $imagen_portada; }
-    public function setNumeroWhatsapp($numero_whatsapp) { $this->numero_whatsapp = $numero_whatsapp; }
-    public function setUserId($user_id) { $this->user_id = $user_id; }
 
     // Método para guardar el negocio en la base de datos
     public function guardar() {
-        $db = new DB();
-        $conn = $db->getConnection();
-
         $sql = "INSERT INTO negocios (nombre, email, imagen_portada, numero_whatsapp, user_id) VALUES (?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-
-        if ($stmt === false) {
-            throw new Exception("Error al preparar la consulta: " . $conn->error);
-        }
-
+        $stmt = $this->conn->prepare($sql);
         $stmt->bind_param('ssssi', $this->nombre, $this->email, $this->imagen_portada, $this->numero_whatsapp, $this->user_id);
 
         if (!$stmt->execute()) {
-            throw new Exception("Error al ejecutar la consulta: " . $stmt->error);
+            throw new Exception("Error al crear el negocio: " . $stmt->error);
         }
 
-        $this->id = $conn->insert_id;
+        $stmt->close();
+    }
+
+    // Obtener negocios asociados a un usuario (por su ID de usuario)
+    public function getNegociosByUserId($user_id) {
+        $sql = "SELECT id, nombre FROM negocios WHERE user_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    // Obtener un negocio por su ID
+    public function getById($id) {
+        $sql = "SELECT * FROM negocios WHERE id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
+    // Actualizar un negocio existente
+    public function update($id, $nombre, $email, $imagen_portada, $numero_whatsapp, $user_id) {
+        $sql = "UPDATE negocios SET nombre = ?, email = ?, imagen_portada = ?, numero_whatsapp = ?, user_id = ? WHERE id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param('ssssii', $nombre, $email, $imagen_portada, $numero_whatsapp, $user_id, $id);
+
+        if (!$stmt->execute()) {
+            throw new Exception("Error al actualizar el negocio: " . $stmt->error);
+        }
 
         $stmt->close();
-        $conn->close();
+    }
+
+    // Eliminar un negocio por su ID
+    public function delete($id) {
+        $sql = "DELETE FROM negocios WHERE id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+
+        if (!$stmt->execute()) {
+            throw new Exception("Error al eliminar el negocio: " . $stmt->error);
+        }
+
+        $stmt->close();
     }
 }
+?>
